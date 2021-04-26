@@ -1,0 +1,4019 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Open and extensible continuous delivery solution for Kubernetes">
+      
+      
+      
+        <meta name="author" content="The Flux project">
+      
+      
+        <link rel="canonical" href="https://toolkit.fluxcd.io/use-cases/gh-actions-manifest-generation/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.3">
+    
+    
+      
+        <title>GitHub Actions Manifest Generation - Flux | GitOps Toolkit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.e35208c4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ef6f36e2.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#2094f3">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../_static/custom.css">
+    
+    
+      
+    
+    
+
+<meta property="og:url" content="https://toolkit.fluxcd.io/use-cases/gh-actions-manifest-generation/">
+
+<meta property="og:title" content="GitHub Actions Manifest Generation - Flux | GitOps Toolkit">
+
+<meta property="og:description" content="Open and extensible continuous delivery solution for Kubernetes">
+<meta property="og:image" content="https://toolkit.fluxcd.io/_files/toolkit-icon.png">
+<meta property="og:image:alt" content="GitOps Toolkit">
+<meta property="og:image:type" content="image/png">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@stefanprodan">
+<meta name="twitter:creator" content="@stefanprodan">
+
+<meta property="twitter:title" content="GitHub Actions Manifest Generation - Flux | GitOps Toolkit">
+
+<meta name="twitter:description" content="Open and extensible continuous delivery solution for Kubernetes">
+<meta name="twitter:image" content="https://toolkit.fluxcd.io/_files/toolkit-icon.png">
+<meta name="twitter:image:alt" content="GitOps Toolkit">
+
+
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#github-actions-manifest-generation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Flux | GitOps Toolkit" class="md-header__button md-logo" aria-label="Flux | GitOps Toolkit" data-md-component="logo">
+      
+  <img src="../../_files/flux-icon@2x.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Flux | GitOps Toolkit
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              GitHub Actions Manifest Generation
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/fluxcd/flux2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    fluxcd/flux2
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Flux | GitOps Toolkit" class="md-nav__button md-logo" aria-label="Flux | GitOps Toolkit" data-md-component="logo">
+      
+  <img src="../../_files/flux-icon@2x.png" alt="logo">
+
+    </a>
+    Flux | GitOps Toolkit
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/fluxcd/flux2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    fluxcd/flux2
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core-concepts/" class="md-nav__link">
+        Core Concepts
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../get-started/" class="md-nav__link">
+        Get Started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      <label class="md-nav__link" for="__nav_4">
+        Migration
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Migration" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Migration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migration/timetable/" class="md-nav__link">
+        Migration and Support Timetable
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/flux-v1-migration/" class="md-nav__link">
+        Migrate from Flux v1
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/flux-v1-automation-migration/" class="md-nav__link">
+        Migrate from Flux v1 image update automation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/helm-operator-migration/" class="md-nav__link">
+        Migrate from the Helm Operator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/faq-migration/" class="md-nav__link">
+        FAQ
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      <label class="md-nav__link" for="__nav_5">
+        Guides
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Guides" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Guides
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/installation/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/helmreleases/" class="md-nav__link">
+        Manage Helm Releases
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/notifications/" class="md-nav__link">
+        Setup Notifications
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/webhook-receivers/" class="md-nav__link">
+        Setup Webhook Receivers
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/monitoring/" class="md-nav__link">
+        Monitoring with Prometheus
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/sealed-secrets/" class="md-nav__link">
+        Sealed Secrets
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/mozilla-sops/" class="md-nav__link">
+        Mozilla SOPS
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/image-update/" class="md-nav__link">
+        Automate image updates to Git
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/sortable-image-tags/" class="md-nav__link">
+        Sortable image tags to use with automation
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" checked>
+      
+      <label class="md-nav__link" for="__nav_6">
+        Use Cases
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Use Cases" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Use Cases
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../azure/" class="md-nav__link">
+        Azure
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          GitHub Actions Manifest Generation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        GitHub Actions Manifest Generation
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#background" class="md-nav__link">
+    Background
+  </a>
+  
+    <nav class="md-nav" aria-label="Background">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-should-we-do" class="md-nav__link">
+    What Should We Do?
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-manifest-generation" class="md-nav__link">
+    Use Manifest Generation
+  </a>
+  
+    <nav class="md-nav" aria-label="Use Manifest Generation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#primary-uses-of-flux" class="md-nav__link">
+    Primary Uses of Flux
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security-consideration" class="md-nav__link">
+    Security Consideration
+  </a>
+  
+    <nav class="md-nav" aria-label="Security Consideration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#motivation-for-this-guide" class="md-nav__link">
+    Motivation for this Guide
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#demonstrated-concepts" class="md-nav__link">
+    Demonstrated Concepts
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-choice-of-github-actions" class="md-nav__link">
+    The Choice of GitHub Actions
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manifest-generation-examples" class="md-nav__link">
+    Manifest Generation Examples
+  </a>
+  
+    <nav class="md-nav" aria-label="Manifest Generation Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#string-substitution-with-sed-i" class="md-nav__link">
+    String Substitution with sed -i
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker-build-and-tag-with-version" class="md-nav__link">
+    Docker Build and Tag with Version
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jsonnet-for-yaml-document-rehydration" class="md-nav__link">
+    Jsonnet for YAML Document Rehydration
+  </a>
+  
+    <nav class="md-nav" aria-label="Jsonnet for YAML Document Rehydration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jsonnet-render-action" class="md-nav__link">
+    Jsonnet Render Action
+  </a>
+  
+    <nav class="md-nav" aria-label="Jsonnet Render Action">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jsonnet-configmap-with-envsubst" class="md-nav__link">
+    Jsonnet ConfigMap with envsubst
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#external-variable-substitution" class="md-nav__link">
+    External Variable Substitution
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#make-two-environments" class="md-nav__link">
+    Make Two Environments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#change-something-and-refactor" class="md-nav__link">
+    Change Something and Refactor
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list-comprehension" class="md-nav__link">
+    List Comprehension
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#breaking-it-down" class="md-nav__link">
+    Breaking It Down
+  </a>
+  
+    <nav class="md-nav" aria-label="Breaking It Down">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#copy-configmaps" class="md-nav__link">
+    Copy ConfigMaps
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#copy-secrets" class="md-nav__link">
+    Copy Secrets
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handling-secrets" class="md-nav__link">
+    Handling Secrets
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#replicate-secrets-across-namespaces" class="md-nav__link">
+    Replicate Secrets Across Namespaces
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#protecting-secrets-from-unauthorized-access" class="md-nav__link">
+    Protecting Secrets from Unauthorized Access
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#more-advanced-secrets-usage" class="md-nav__link">
+    More Advanced Secrets Usage
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jsonnet-recap" class="md-nav__link">
+    Jsonnet Recap
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#commit-across-repositories-workflow" class="md-nav__link">
+    Commit Across Repositories Workflow
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adapting-for-flux-v2" class="md-nav__link">
+    Adapting for Flux v2
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../helm/" class="md-nav__link">
+        Helm
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      <label class="md-nav__link" for="__nav_7">
+        Toolkit Components
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Toolkit Components" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Toolkit Components
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2" type="checkbox" id="__nav_7_2" >
+      
+      <label class="md-nav__link" for="__nav_7_2">
+        Source Controller
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Source Controller" data-md-level="2">
+        <label class="md-nav__title" for="__nav_7_2">
+          <span class="md-nav__icon md-icon"></span>
+          Source Controller
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/source/controller/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/source/gitrepositories/" class="md-nav__link">
+        GitRepository CRD
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/source/helmrepositories/" class="md-nav__link">
+        HelmRepository CRD
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/source/helmcharts/" class="md-nav__link">
+        HelmChart CRD
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/source/buckets/" class="md-nav__link">
+        Bucket CRD
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/source/api/" class="md-nav__link">
+        Source API Reference
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_3" type="checkbox" id="__nav_7_3" >
+      
+      <label class="md-nav__link" for="__nav_7_3">
+        Kustomize Controller
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Kustomize Controller" data-md-level="2">
+        <label class="md-nav__title" for="__nav_7_3">
+          <span class="md-nav__icon md-icon"></span>
+          Kustomize Controller
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/kustomize/controller/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/kustomize/kustomization/" class="md-nav__link">
+        Kustomization CRD
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/kustomize/api/" class="md-nav__link">
+        Kustomize API Reference
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_4" type="checkbox" id="__nav_7_4" >
+      
+      <label class="md-nav__link" for="__nav_7_4">
+        Helm Controller
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Helm Controller" data-md-level="2">
+        <label class="md-nav__title" for="__nav_7_4">
+          <span class="md-nav__icon md-icon"></span>
+          Helm Controller
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/helm/controller/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/helm/helmreleases/" class="md-nav__link">
+        HelmRelease CRD
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/helm/api/" class="md-nav__link">
+        Helm API Reference
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_5" type="checkbox" id="__nav_7_5" >
+      
+      <label class="md-nav__link" for="__nav_7_5">
+        Notification Controller
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Notification Controller" data-md-level="2">
+        <label class="md-nav__title" for="__nav_7_5">
+          <span class="md-nav__icon md-icon"></span>
+          Notification Controller
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/notification/controller/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/notification/event/" class="md-nav__link">
+        Event
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/notification/provider/" class="md-nav__link">
+        Provider CRD
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/notification/alert/" class="md-nav__link">
+        Alert CRD
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/notification/receiver/" class="md-nav__link">
+        Receiver CRD
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/notification/api/" class="md-nav__link">
+        Notification API Reference
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_6" type="checkbox" id="__nav_7_6" >
+      
+      <label class="md-nav__link" for="__nav_7_6">
+        Image Automation Controllers
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Image Automation Controllers" data-md-level="2">
+        <label class="md-nav__title" for="__nav_7_6">
+          <span class="md-nav__icon md-icon"></span>
+          Image Automation Controllers
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/image/controller/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/image/imagerepositories/" class="md-nav__link">
+        ImageRepository CRD
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/image/imagepolicies/" class="md-nav__link">
+        ImagePolicy CRD
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/image/imageupdateautomations/" class="md-nav__link">
+        ImageUpdateAutomation CRD
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../components/image/automation-api/" class="md-nav__link">
+        Automation API Reference
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      <label class="md-nav__link" for="__nav_8">
+        Flux CLI
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Flux CLI" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Flux CLI
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_bootstrap/" class="md-nav__link">
+        Bootstrap
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_bootstrap_github/" class="md-nav__link">
+        Bootstrap github
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_bootstrap_gitlab/" class="md-nav__link">
+        Bootstrap gitlab
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_check/" class="md-nav__link">
+        Check
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_create/" class="md-nav__link">
+        Create
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_create_kustomization/" class="md-nav__link">
+        Create kustomization
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_create_helmrelease/" class="md-nav__link">
+        Create helmrelease
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_create_source/" class="md-nav__link">
+        Create source
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_create_source_git/" class="md-nav__link">
+        Create source git
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_create_source_helm/" class="md-nav__link">
+        Create source helm
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_create_source_bucket/" class="md-nav__link">
+        Create source bucket
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_create_alert-provider/" class="md-nav__link">
+        Create alert provider
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_create_alert/" class="md-nav__link">
+        Create alert
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_create_receiver/" class="md-nav__link">
+        Create receiver
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_create_image/" class="md-nav__link">
+        Create image
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_create_image_policy/" class="md-nav__link">
+        Create image policy
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_create_image_repository/" class="md-nav__link">
+        Create image repository
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_create_image_update/" class="md-nav__link">
+        Create image update
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_create_tenant/" class="md-nav__link">
+        Create tenant
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_create_secret/" class="md-nav__link">
+        Create secret
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_create_secret_git/" class="md-nav__link">
+        Create secret git
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_create_secret_helm/" class="md-nav__link">
+        Create secret helm
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_create_secret_tls/" class="md-nav__link">
+        Create secret tls
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_delete/" class="md-nav__link">
+        Delete
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_delete_kustomization/" class="md-nav__link">
+        Delete kustomization
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_delete_helmrelease/" class="md-nav__link">
+        Delete helmrelease
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_delete_source/" class="md-nav__link">
+        Delete source
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_delete_source_git/" class="md-nav__link">
+        Delete source git
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_delete_source_helm/" class="md-nav__link">
+        Delete source helm
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_delete_source_bucket/" class="md-nav__link">
+        Delete source bucket
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_delete_image/" class="md-nav__link">
+        Delete image
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_delete_image_policy/" class="md-nav__link">
+        Delete image policy
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_delete_image_repository/" class="md-nav__link">
+        Delete image repository
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_delete_image_update/" class="md-nav__link">
+        Delete image update
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_export/" class="md-nav__link">
+        Export
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_export_kustomization/" class="md-nav__link">
+        Export kustomization
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_export_helmrelease/" class="md-nav__link">
+        Export helmrelease
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_export_source/" class="md-nav__link">
+        Export source
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_export_source_git/" class="md-nav__link">
+        Export source git
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_export_source_helm/" class="md-nav__link">
+        Export source helm
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_export_source_bucket/" class="md-nav__link">
+        Export source bucket
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_export_alert-provider/" class="md-nav__link">
+        Export alert provider
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_export_alert/" class="md-nav__link">
+        Export alert
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_export_receiver/" class="md-nav__link">
+        Export receiver
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_export_image/" class="md-nav__link">
+        Export image
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_export_image_policy/" class="md-nav__link">
+        Export image policy
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_export_image_repository/" class="md-nav__link">
+        Export image repository
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_export_image_update/" class="md-nav__link">
+        Export image update
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_get/" class="md-nav__link">
+        Get
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_get_all/" class="md-nav__link">
+        Get all
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_get_kustomizations/" class="md-nav__link">
+        Get kustomizations
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_get_helmreleases/" class="md-nav__link">
+        Get helmreleases
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_get_sources/" class="md-nav__link">
+        Get sources
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_get_sources_all/" class="md-nav__link">
+        Get sources all
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_get_sources_git/" class="md-nav__link">
+        Get sources git
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_get_sources_helm/" class="md-nav__link">
+        Get sources helm
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_get_sources_chart/" class="md-nav__link">
+        Get sources chart
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_get_sources_bucket/" class="md-nav__link">
+        Get sources bucket
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_get_alert-provider.md" class="md-nav__link">
+        Get alert provider
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_get_alerts/" class="md-nav__link">
+        Get alerts
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_get_alert-providers/" class="md-nav__link">
+        Get alert providers
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_get_receivers/" class="md-nav__link">
+        Get receivers
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_get_images/" class="md-nav__link">
+        Get images
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_get_images_all/" class="md-nav__link">
+        Get images all
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_get_images_policy/" class="md-nav__link">
+        Get images policy
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_get_images_repository/" class="md-nav__link">
+        Get images repository
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_get_images_update/" class="md-nav__link">
+        Get images update
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_install/" class="md-nav__link">
+        Install
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_logs/" class="md-nav__link">
+        Logs
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_resume/" class="md-nav__link">
+        Resume
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_resume_kustomization/" class="md-nav__link">
+        Resume kustomization
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_resume_helmrelease/" class="md-nav__link">
+        Resume helmrelease
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_resume_source/" class="md-nav__link">
+        Resume source
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_resume_source_git/" class="md-nav__link">
+        Resume source git
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_resume_source_helm/" class="md-nav__link">
+        Resume source helm
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_resume_source_chart/" class="md-nav__link">
+        Resume source chart
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_resume_source_bucket/" class="md-nav__link">
+        Resume source bucket
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_resume_alert-provider.md" class="md-nav__link">
+        Resume alert provider
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_resume_alert/" class="md-nav__link">
+        Resume alert
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_resume_receiver/" class="md-nav__link">
+        Resume receiver
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_resume_image/" class="md-nav__link">
+        Resume image
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_resume_image_repository/" class="md-nav__link">
+        Resume image repository
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_resume_image_update/" class="md-nav__link">
+        Resume image update
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_suspend/" class="md-nav__link">
+        Suspend
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_suspend_kustomization/" class="md-nav__link">
+        Suspend kustomization
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_suspend_helmrelease/" class="md-nav__link">
+        Suspend helmrelease
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_suspend_source/" class="md-nav__link">
+        Suspend source
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_suspend_source_git/" class="md-nav__link">
+        Suspend source git
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_suspend_source_helm/" class="md-nav__link">
+        Suspend source helm
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_suspend_source_chart/" class="md-nav__link">
+        Suspend source chart
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_suspend_source_bucket/" class="md-nav__link">
+        Suspend source bucket
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_suspend_alert-provider.md" class="md-nav__link">
+        Suspend alert provider
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_suspend_alert/" class="md-nav__link">
+        Suspend alert
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_suspend_receiver/" class="md-nav__link">
+        Suspend receiver
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_suspend_image/" class="md-nav__link">
+        Suspend image
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_suspend_image_repository/" class="md-nav__link">
+        Suspend image repository
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_suspend_image_update/" class="md-nav__link">
+        Suspend image update
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_reconcile/" class="md-nav__link">
+        Reconcile
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_reconcile_kustomization/" class="md-nav__link">
+        Reconcile kustomization
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_reconcile_helmrelease/" class="md-nav__link">
+        Reconcile helmrelease
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_reconcile_source/" class="md-nav__link">
+        Reconcile source
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_reconcile_source_git/" class="md-nav__link">
+        Reconcile source git
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_reconcile_source_helm/" class="md-nav__link">
+        Reconcile source helm
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_reconcile_source_bucket/" class="md-nav__link">
+        Reconcile source bucket
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_reconcile_image/" class="md-nav__link">
+        Reconcile image
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_reconcile_image_repository/" class="md-nav__link">
+        Reconcile image repository
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_reconcile_image_update/" class="md-nav__link">
+        Reconcile image update
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cmd/flux_uninstall/" class="md-nav__link">
+        Uninstall
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      <label class="md-nav__link" for="__nav_9">
+        Dev Guides
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Dev Guides" data-md-level="1">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          Dev Guides
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dev-guides/source-watcher/" class="md-nav__link">
+        Watching for source changes
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dev-guides/debugging/" class="md-nav__link">
+        Advanced debugging
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/" class="md-nav__link">
+        Roadmap
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        FAQ
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#background" class="md-nav__link">
+    Background
+  </a>
+  
+    <nav class="md-nav" aria-label="Background">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-should-we-do" class="md-nav__link">
+    What Should We Do?
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-manifest-generation" class="md-nav__link">
+    Use Manifest Generation
+  </a>
+  
+    <nav class="md-nav" aria-label="Use Manifest Generation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#primary-uses-of-flux" class="md-nav__link">
+    Primary Uses of Flux
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security-consideration" class="md-nav__link">
+    Security Consideration
+  </a>
+  
+    <nav class="md-nav" aria-label="Security Consideration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#motivation-for-this-guide" class="md-nav__link">
+    Motivation for this Guide
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#demonstrated-concepts" class="md-nav__link">
+    Demonstrated Concepts
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-choice-of-github-actions" class="md-nav__link">
+    The Choice of GitHub Actions
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manifest-generation-examples" class="md-nav__link">
+    Manifest Generation Examples
+  </a>
+  
+    <nav class="md-nav" aria-label="Manifest Generation Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#string-substitution-with-sed-i" class="md-nav__link">
+    String Substitution with sed -i
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker-build-and-tag-with-version" class="md-nav__link">
+    Docker Build and Tag with Version
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jsonnet-for-yaml-document-rehydration" class="md-nav__link">
+    Jsonnet for YAML Document Rehydration
+  </a>
+  
+    <nav class="md-nav" aria-label="Jsonnet for YAML Document Rehydration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jsonnet-render-action" class="md-nav__link">
+    Jsonnet Render Action
+  </a>
+  
+    <nav class="md-nav" aria-label="Jsonnet Render Action">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jsonnet-configmap-with-envsubst" class="md-nav__link">
+    Jsonnet ConfigMap with envsubst
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#external-variable-substitution" class="md-nav__link">
+    External Variable Substitution
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#make-two-environments" class="md-nav__link">
+    Make Two Environments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#change-something-and-refactor" class="md-nav__link">
+    Change Something and Refactor
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list-comprehension" class="md-nav__link">
+    List Comprehension
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#breaking-it-down" class="md-nav__link">
+    Breaking It Down
+  </a>
+  
+    <nav class="md-nav" aria-label="Breaking It Down">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#copy-configmaps" class="md-nav__link">
+    Copy ConfigMaps
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#copy-secrets" class="md-nav__link">
+    Copy Secrets
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handling-secrets" class="md-nav__link">
+    Handling Secrets
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#replicate-secrets-across-namespaces" class="md-nav__link">
+    Replicate Secrets Across Namespaces
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#protecting-secrets-from-unauthorized-access" class="md-nav__link">
+    Protecting Secrets from Unauthorized Access
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#more-advanced-secrets-usage" class="md-nav__link">
+    More Advanced Secrets Usage
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jsonnet-recap" class="md-nav__link">
+    Jsonnet Recap
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#commit-across-repositories-workflow" class="md-nav__link">
+    Commit Across Repositories Workflow
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adapting-for-flux-v2" class="md-nav__link">
+    Adapting for Flux v2
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="github-actions-manifest-generation">GitHub Actions Manifest Generation<a class="headerlink" href="#github-actions-manifest-generation" title="Permanent link">&para;</a></h1>
+<p>This example implements "build-time" manifest generation on GitHub Actions.</p>
+<p>Third-party tools are used to generate YAML manifests in a CI job. The updated YAML are committed and pushed to Git, where <code>kustomize-controller</code> finally applies them.</p>
+<h3 id="background">Background<a class="headerlink" href="#background" title="Permanent link">&para;</a></h3>
+<p>There are many use cases for manifest generation tools, but Flux v2 no longer permits embedding arbitrary binaries with the Flux machinery to run at apply time.</p>
+<p>Flux (kustomize-controller) will apply whatever revision of the manifests are at the latest commit, on any branch it is pointed at. By design, Flux doesn't care for any details of how a commit is generated.</p>
+<p>Since <a href="https://github.com/fluxcd/flux2/discussions/802">"select latest by build time" image automation</a> is deprecated, and since <a href="https://github.com/fluxcd/flux2/issues/543"><code>.flux.yaml</code> is also deprecated</a>, some staple workflows are no longer possible without new accommodations from infrastructure.</p>
+<h4 id="what-should-we-do">What Should We Do?<a class="headerlink" href="#what-should-we-do" title="Permanent link">&para;</a></h4>
+<p>We first recommend users <a href="/guides/sortable-image-tags/">adjust their tagging strategies</a>, which is made clear elsewhere in the docs. This is usually a straightforward adjustment, and enables the use of <a href="/guides/image-update/">Image Update Policies</a>; however this may not be feasible or desired in some cases.</p>
+<h2 id="use-manifest-generation">Use Manifest Generation<a class="headerlink" href="#use-manifest-generation" title="Permanent link">&para;</a></h2>
+<p>Introducing, Manifest Generation with Jsonnet, for <a href="https://github.com/kingdonb/any_old_app">any old app</a> on GitHub!</p>
+<p>If you have followed the <a href="/get-started/">Flux bootstrap guide</a> and only have one <code>fleet-infra</code> repository, it is recommended to create a separate repository that represents your application for this use case guide, or clone the repository linked above in order to review these code examples which have already been implemented there.</p>
+<h3 id="primary-uses-of-flux">Primary Uses of Flux<a class="headerlink" href="#primary-uses-of-flux" title="Permanent link">&para;</a></h3>
+<p>Flux's primary use case for <code>kustomize-controller</code> is to apply YAML manifests from the latest <code>Revision</code> of an <code>Artifact</code>.</p>
+<h3 id="security-consideration">Security Consideration<a class="headerlink" href="#security-consideration" title="Permanent link">&para;</a></h3>
+<p>Flux v2 can not be configured to call out to arbitrary binaries that a user might supply with an <code>InitContainer</code>, as it was possible to do in Flux v1.</p>
+<h4 id="motivation-for-this-guide">Motivation for this Guide<a class="headerlink" href="#motivation-for-this-guide" title="Permanent link">&para;</a></h4>
+<p>In Flux v2 it is assumed if users want to run more than <code>Kustomize</code> with <code>envsubst</code>, that it will be done outside of Flux; the goal of this guide is to show several common use cases of this pattern in secure ways.</p>
+<h4 id="demonstrated-concepts">Demonstrated Concepts<a class="headerlink" href="#demonstrated-concepts" title="Permanent link">&para;</a></h4>
+<p>It is intended, finally, to show through this use case, three fundamental ideas for use in CI to accompany Flux automation:</p>
+<ol>
+<li>Writing workflow that can commit changes back to the same branch of a working repository.</li>
+<li>A workflow to commit generated content from one directory into a different branch in the repository.</li>
+<li>Workflow to commit from any source directory into a target branch on a different repository.</li>
+</ol>
+<p>Readers can interpret this document with adaptations for use with other CI providers, or Git source hosts, or manifest generators.</p>
+<p>Jsonnet is demonstrated with examples presented in sufficient depth that, hopefully, Flux users who are not already familiar with manifest generation or Jsonnet can pick up <code>kubecfg</code> and start using it to solve novel and interesting configuration problems.</p>
+<h3 id="the-choice-of-github-actions">The Choice of GitHub Actions<a class="headerlink" href="#the-choice-of-github-actions" title="Permanent link">&para;</a></h3>
+<p>There are authentication concerns to address with every CI provider and they also differ by Git provider.</p>
+<p>Given that GitHub Actions are hosted on GitHub, this guide can be streamlined in some ways. We can almost completely skip configuring authentication. The cross-cutting concern is handled by the CI platform, except in our fourth and final example, the <em>Commit Across Repositories Workflow</em>.</p>
+<p>From a GitHub Action, as we must have been authenticated to write to a branch, Workflows also can transitively gain write access to the repo safely.</p>
+<p>Mixing and matching from other providers like Bitbucket Cloud, Jenkins, or GitLab will need more attention to these details for auth configurations. GitHub Actions is a platform that is designed to be secure by default.</p>
+<h2 id="manifest-generation-examples">Manifest Generation Examples<a class="headerlink" href="#manifest-generation-examples" title="Permanent link">&para;</a></h2>
+<p>There are several use cases presented.</p>
+<ul>
+<li><a href="#string-substitution-with-sed-i">String Substitution with sed -i</a></li>
+<li><a href="#docker-build-and-tag-with-version">Docker Build and Tag with Version</a></li>
+<li><a href="#jsonnet-for-yaml-document-rehydration">Jsonnet for YAML Document Rehydration</a></li>
+<li><a href="#commit-across-repositories-workflow">Commit Across Repositories Workflow</a></li>
+</ul>
+<p>In case these examples are too heavy, this short link guide can help you navigate the four main examples. Finally, the code examples we've all been waiting for, the answer to complex <code>.flux.yaml</code> configs in Flux v2! 🎉🎁</p>
+<h3 id="string-substitution-with-sed-i">String Substitution with <code>sed -i</code><a class="headerlink" href="#string-substitution-with-sed-i" title="Permanent link">&para;</a></h3>
+<p>The entry point for these examples begins at <code>.github/workflows/</code> in any GitHub source repository where your YAML manifests are stored.</p>
+<div class="admonition warning">
+<p class="admonition-title"><code>GitRepository</code> source only targets one branch</p>
+<p>While this first example operates on any branch (<code>branches: ['*']</code>), each <code>Kustomization</code> in Flux only deploys manifests from <strong>one branch or tag</strong> at a time. Understanding this is key for managing large Flux deployments and clusters with multiple <code>Kustomizations</code> and/or crossing several environments.</p>
+</div>
+<p>First add this directory if needed in your repositories. Find the example below in context, and read on to understand how it works: <a href="https://github.com/kingdonb/any_old_app/blob/main/.github/workflows/01-manifest-generate.yaml">01-manifest-generate.yaml</a>.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># ./.github/workflows/01-manifest-generate.yaml</span>
+<span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Manifest Generation</span>
+<span class="nt">on</span><span class="p">:</span>
+  <span class="nt">push</span><span class="p">:</span>
+    <span class="nt">branches</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&#39;*&#39;</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+  <span class="nt">run</span><span class="p">:</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Push Git Update</span>
+    <span class="nt">runs-on</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+    <span class="nt">steps</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Prepare</span>
+        <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">prep</span>
+        <span class="nt">run</span><span class="p">:</span> <span class="p p-Indicator">|</span>
+          <span class="no">VERSION=${GITHUB_SHA::8}</span>
+          <span class="no">echo ::set-output name=BUILD_DATE::$(date -u +&#39;%Y-%m-%dT%H:%M:%SZ&#39;)</span>
+          <span class="no">echo ::set-output name=VERSION::${VERSION}</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Checkout repo</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">actions/checkout@v2</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Update manifests</span>
+        <span class="nt">run</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./update-k8s.sh $GITHUB_SHA</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Commit changes</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">EndBug/add-and-commit@v7</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">add</span><span class="p">:</span> <span class="s">&#39;.&#39;</span>
+          <span class="nt">message</span><span class="p">:</span> <span class="s">&quot;[ci</span><span class="nv"> </span><span class="s">skip]</span><span class="nv"> </span><span class="s">deploy</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">${{</span><span class="nv"> </span><span class="s">steps.prep.outputs.VERSION</span><span class="nv"> </span><span class="s">}}&quot;</span>
+          <span class="nt">signoff</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<p>In the <code>Prepare</code> step, even before the clone, GitHub Actions provides metadata about the commit. Then, <code>Checkout repo</code> performs a shallow clone for the build.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># excerpt from above - set two outputs named &quot;VERSION&quot; and &quot;BUILD_DATE&quot;</span>
+<span class="nv">VERSION</span><span class="o">=</span><span class="si">${</span><span class="nv">GITHUB_SHA</span><span class="p">::</span><span class="nv">8</span><span class="si">}</span>
+<span class="nb">echo</span> ::set-output <span class="nv">name</span><span class="o">=</span>BUILD_DATE::<span class="k">$(</span>date -u +<span class="s1">&#39;%Y-%m-%dT%H:%M:%SZ&#39;</span><span class="k">)</span>
+<span class="nb">echo</span> ::set-output <span class="nv">name</span><span class="o">=</span>VERSION::<span class="si">${</span><span class="nv">VERSION</span><span class="si">}</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">When migrating to Flux v2</p>
+<p>Users will find that <a href="https://github.com/fluxcd/flux2/discussions/802#discussioncomment-320189">some guidance has changed since Flux v1</a>. Tagging images with a <code>GIT_SHA</code> was a common practice that is no longer supported by Flux's Image Automation. A newer alternative is adding timestamp or build number in <a href="/guides/sortable-image-tags/">Sortable image tags</a>, preferred by the <code>image-automation-controller</code>.</p>
+</div>
+<p>Next we call out to a shell script <code>update-k8s.sh</code> taking one argument, the Git SHA value from GitHub:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># excerpted from above - run a shell script</span>
+<span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Update manifests</span>
+  <span class="nt">run</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./update-k8s.sh $GITHUB_SHA</span>
+</code></pre></div>
+<p>That script is below. It performs two in-place string substitutions using <code>sed</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+
+<span class="c1"># update-k8s.sh</span>
+<span class="nb">set</span> -feu    <span class="c1"># Usage: $0 &lt;GIT_SHA&gt;   # Fails when GIT_SHA is not provided</span>
+
+<span class="nv">GIT_SHA</span><span class="o">=</span><span class="si">${</span><span class="nv">1</span><span class="p">:</span><span class="nv">0</span><span class="p">:</span><span class="nv">8</span><span class="si">}</span>
+sed -i <span class="s2">&quot;s|image: kingdonb/any-old-app:.*|image: kingdonb/any-old-app:</span><span class="nv">$GIT_SHA</span><span class="s2">|&quot;</span> k8s.yml
+sed -i <span class="s2">&quot;s|GIT_SHA: .*|GIT_SHA: </span><span class="nv">$GIT_SHA</span><span class="s2">|&quot;</span> flux-config/configmap.yaml
+</code></pre></div>
+<p><code>update-k8s.sh</code> receives <code>GITHUB_SHA</code> that the script trims down to 8 characters.</p>
+<p>Then, <code>sed -i</code> runs twice, updating <code>k8s.yml</code> and <code>flux-config/configmap.yaml</code> which are also provided as examples here. The new SHA value is added twice, once in each file.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># k8s.yml</span>
+<span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">apps/v1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Deployment</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">any-old-app</span>
+<span class="nt">spec</span><span class="p">:</span>
+  <span class="nt">replicas</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+  <span class="nt">selector</span><span class="p">:</span>
+    <span class="nt">matchLabels</span><span class="p">:</span>
+      <span class="nt">app</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">any-old-app</span>
+  <span class="nt">template</span><span class="p">:</span>
+    <span class="nt">metadata</span><span class="p">:</span>
+      <span class="nt">labels</span><span class="p">:</span>
+        <span class="nt">app</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">any-old-app</span>
+    <span class="nt">spec</span><span class="p">:</span>
+      <span class="nt">containers</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">kingdonb/any-old-app:4f314627</span>
+        <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">any-old-app</span>
+<span class="nn">---</span>
+<span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Service</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">any-old-app</span>
+<span class="nt">spec</span><span class="p">:</span>
+  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ClusterIP</span>
+  <span class="nt">ports</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;any-old-app&quot;</span>
+    <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3000</span>
+  <span class="nt">selector</span><span class="p">:</span>
+    <span class="nt">app</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">any-old-app</span>
+</code></pre></div>
+<p>The convention of including a <code>k8s.yml</code> file in one's application repository is borrowed from <a href="https://github.com/okteto/go-getting-started/blob/master/k8s.yml">Okteto's Getting Started Guides</a>, as a simplified example.</p>
+<p>The <code>k8s.yml</code> file in the application root is not meant to be applied by Flux, but might be a handy template to keep fresh as a developer reference nonetheless.</p>
+<p>The file below, <code>configmap.yaml</code>, is placed in a directory <code>flux-config/</code> which will be synchronized to the cluster by a <code>Kustomization</code> that we will add in the following step.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># flux-config/configmap.yaml</span>
+<span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v1</span>
+<span class="nt">data</span><span class="p">:</span>
+  <span class="nt">GIT_SHA</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4f314627</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ConfigMap</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">creationTimestamp</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">any-old-app-version</span>
+  <span class="nt">namespace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">devl</span>
+</code></pre></div>
+<p>These are the two files that are re-written in the <code>sed -i</code> example above.</p>
+<p>A configmap is an ideal place to write a variable that is needed by any downstream <code>Kustomization</code>, for example to use with <code>envsubst</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="nn">---</span>
+<span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">kustomize.toolkit.fluxcd.io/v1beta1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Kustomization</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">any-old-app-devl</span>
+<span class="nt">spec</span><span class="p">:</span>
+  <span class="nt">interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">15m0s</span>
+  <span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./</span>
+  <span class="nt">prune</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">sourceRef</span><span class="p">:</span>
+    <span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GitRepository</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">any-old-app-prod</span>
+  <span class="nt">targetNamespace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">prod</span>
+  <span class="nt">validation</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">client</span>
+  <span class="nt">postBuild</span><span class="p">:</span>
+    <span class="nt">substituteFrom</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ConfigMap</span>
+        <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">any-old-app-version</span>
+<span class="nn">---</span>
+<span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">source.toolkit.fluxcd.io/v1beta1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GitRepository</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">any-old-app-prod</span>
+  <span class="nt">namespace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">prod</span>
+<span class="nt">spec</span><span class="p">:</span>
+  <span class="nt">interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20m0s</span>
+  <span class="nt">ref</span><span class="p">:</span>
+    <span class="nt">branch</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">deploy</span>
+  <span class="nt">secretRef</span><span class="p">:</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">flux-secret</span>
+  <span class="nt">url</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ssh://git@github.com/kingdonb/csh-flux</span>
+</code></pre></div>
+<p>Now, any downstream <code>Deployment</code> in the <code>Kustomization</code> can write a <code>PodSpec</code> like this one, to reference the image from the latest commit referenced by the <code>ConfigMap</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># flux/ some-example-deployment.yaml</span>
+<span class="nt">spec</span><span class="p">:</span>
+  <span class="nt">replicas</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+  <span class="nt">selector</span><span class="p">:</span>
+    <span class="nt">matchLabels</span><span class="p">:</span>
+      <span class="nt">app</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">any-old-app</span>
+  <span class="nt">template</span><span class="p">:</span>
+    <span class="nt">metadata</span><span class="p">:</span>
+      <span class="nt">labels</span><span class="p">:</span>
+        <span class="nt">app</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">any-old-app</span>
+    <span class="nt">spec</span><span class="p">:</span>
+      <span class="nt">containers</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">kingdonb/any-old-app:${GIT_SHA}</span>
+        <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">any-old-app</span>
+</code></pre></div>
+<p>Deployment specifications will vary, so adapting this example is left as exercise for the reader. Write it together with a kustomization.yaml, or just add this to a subdirectory anywhere within your Flux Kustomization path.</p>
+<h3 id="docker-build-and-tag-with-version">Docker Build and Tag with Version<a class="headerlink" href="#docker-build-and-tag-with-version" title="Permanent link">&para;</a></h3>
+<p>Now for another staple workflow: building and pushing an OCI image tag from a Dockerfile in any branch or tag.</p>
+<p>From the Actions marketplace, <a href="https://github.com/marketplace/actions/build-and-push-docker-images">Build and push Docker images</a> provides the heavy lifting in this example. Flux has nothing to do with building images, but we include this still — as some images will need to be built for our use in these examples.</p>
+<div class="admonition hint">
+<p class="admonition-title"><code>ImageRepository</code> can reflect both branches and tags</p>
+<p>This example builds an image for any branch or tag ref and pushes it to Docker Hub. (Note the omission of <code>branches: ['*']</code> that was in the prior example.) GitHub Secrets <code>DOCKERHUB_USERNAME</code> and <code>DOCKERHUB_TOKEN</code> are used here to authenticate with Docker Hub from within GitHub Actions.</p>
+</div>
+<p>We again borrow a <a href="https://github.com/fluxcd/kustomize-controller/blob/5da1fc043db4a1dc9fd3cf824adc8841b56c2fcd/.github/workflows/release.yml#L17-L25">Prepare step</a> from Kustomize Controller's own release workflow. Find the example below in context, <a href="https://github.com/kingdonb/any_old_app/blob/main/.github/workflows/02-docker-build.yaml">02-docker-build.yaml</a>, or copy it from below.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># ./.github/workflows/02-docker-build.yaml</span>
+<span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Docker Build, Push</span>
+
+<span class="nt">on</span><span class="p">:</span>
+  <span class="nt">push</span><span class="p">:</span>
+    <span class="nt">branches</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="s">&#39;*&#39;</span>
+    <span class="nt">tags-ignore</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="s">&#39;release/*&#39;</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+  <span class="nt">docker</span><span class="p">:</span>
+    <span class="nt">runs-on</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+    <span class="nt">steps</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Prepare</span>
+        <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">prep</span>
+        <span class="nt">run</span><span class="p">:</span> <span class="p p-Indicator">|</span>
+          <span class="no">VERSION=${GITHUB_SHA::8}</span>
+          <span class="no">if [[ $GITHUB_REF == refs/tags/* ]]; then</span>
+            <span class="no">VERSION=${GITHUB_REF/refs\/tags\//}</span>
+          <span class="no">fi</span>
+          <span class="no">echo ::set-output name=BUILD_DATE::$(date -u +&#39;%Y-%m-%dT%H:%M:%SZ&#39;)</span>
+          <span class="no">echo ::set-output name=VERSION::${VERSION}</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Set up QEMU</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">docker/setup-qemu-action@v1</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Set up Docker Buildx</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">docker/setup-buildx-action@v1</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Login to DockerHub</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">docker/login-action@v1</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">username</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{ secrets.DOCKERHUB_USERNAME }}</span>
+          <span class="nt">password</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{ secrets.DOCKERHUB_TOKEN }}</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Build and push</span>
+        <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">docker_build</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">docker/build-push-action@v2</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">push</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+          <span class="nt">tags</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">kingdonb/any-old-app:${{ steps.prep.outputs.VERSION }}</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Image digest</span>
+        <span class="nt">run</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">echo ${{ steps.docker_build.outputs.digest }}</span>
+</code></pre></div>
+<p>The <a href="https://github.com/marketplace/actions/docker-login">Docker Login Action</a> is used here to enable an authenticated image push.</p>
+<p>Any secrets from GitHub Secrets can be used as shown, and support for image registries is explained in the linked README. Add a setting for <code>registry</code> if your app uses any private registry, rather than the implicit Docker Hub registry above.</p>
+<div class="highlight"><pre><span></span><code># for example
+with:
+  registry: registry.cloud.okteto.net
+</code></pre></div>
+<p>The image tag <code>VERSION</code> comes from the branch or Git tag that triggered the build. Whether that version is a <code>GIT_SHA</code> or a Semantic Version, (or anything in between!) the same workflow can be used to build an OCI image as shown here.</p>
+<h3 id="jsonnet-for-yaml-document-rehydration">Jsonnet for YAML Document Rehydration<a class="headerlink" href="#jsonnet-for-yaml-document-rehydration" title="Permanent link">&para;</a></h3>
+<p>As mentioned before, Flux only monitors one branch or tag per Kustomization.</p>
+<p>In the earlier examples, no fixed branch target was specified. Whatever branch triggered the workflow, received the generated YAMLs in the next commit.</p>
+<p>If you created your deployment manifests in any branch, the <code>deploy</code> branch or otherwise, it is necessary to add another <code>Kustomization</code> and <code>GitRepository</code> source to apply manifests from that branch and path in the cluster.</p>
+<p>In application repositories, it is common to maintain an environment branch, a release branch, or both. Some additional Flux objects may be needed for each new environment target with its own branch. Jsonnet can be used for more easily managing heavyweight repetitive boilerplate configuration such as this.</p>
+<p>It is recommended to follow these examples as they are written for better understanding, then later change and adapt them for your own release practices and environments.</p>
+<div class="admonition note">
+<p class="admonition-title"><code>GitRepository</code> source only targets one branch</p>
+<p>Since Flux uses one branch per Kustomization, to trigger an update we must write to a <code>deploy</code> branch or tag. Even when new app images can come from any branch (eg. for Dev environments where any latest commit is to be deployed) the YAML manifests to deploy will be sourced from just one branch.</p>
+</div>
+<p>It is advisable to protect repository main and release branches with eg. branch policies and review requirements, as through automation, these branches can directly represent the production environment.</p>
+<p>The CI user for this example should be allowed to push directly to the <code>deploy</code> branch that Kustomize deploys from; this branch also represents the environment so must be protected in a similar fashion to <code>release</code>.</p>
+<p>Only authorized people (and build robots) should be allowed to make writes to a <code>deploy</code> branch.</p>
+<h4 id="jsonnet-render-action">Jsonnet Render Action<a class="headerlink" href="#jsonnet-render-action" title="Permanent link">&para;</a></h4>
+<p>In this example, the outputted YAML manifests, (on successful completion of the Jsonnet render step,) are staged on the <code>deploy</code> branch, then committed and pushed.</p>
+<p>The latest commit on the <code>deploy</code> branch is reconciled into the cluster by another <code>Kustomization</code> that is omitted here, as it is assumed that users who have read this far already added this in the previous examples.</p>
+<p>You may find the example below in context, <a href="https://github.com/kingdonb/any_old_app/blob/main/.github/workflows/03-release-manifests.yaml">03-release-manifests.yaml</a>, or simply copy it from below.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># ./.github/workflows/03-release-manifests.yaml</span>
+<span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Build jsonnet</span>
+<span class="nt">on</span><span class="p">:</span>
+  <span class="nt">push</span><span class="p">:</span>
+    <span class="nt">tags</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&#39;release/*&#39;</span><span class="p p-Indicator">]</span>
+    <span class="nt">branches</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&#39;release&#39;</span><span class="p p-Indicator">]</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+  <span class="nt">run</span><span class="p">:</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">jsonnet push</span>
+    <span class="nt">runs-on</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+    <span class="nt">steps</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Prepare</span>
+        <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">prep</span>
+        <span class="nt">run</span><span class="p">:</span> <span class="p p-Indicator">|</span>
+          <span class="no">VERSION=${GITHUB_SHA::8}</span>
+          <span class="no">if [[ $GITHUB_REF == refs/tags/release/* ]]; then</span>
+            <span class="no">VERSION=${GITHUB_REF/refs\/tags\/release\//}</span>
+          <span class="no">fi</span>
+          <span class="no">echo ::set-output name=BUILD_DATE::$(date -u +&#39;%Y-%m-%dT%H:%M:%SZ&#39;)</span>
+          <span class="no">echo ::set-output name=VERSION::${VERSION}</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Checkout repo</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">actions/checkout@v2</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Setup kubecfg CLI</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">kingdonb/kubecfg/action@main</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">kubecfg show</span>
+        <span class="nt">run</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">kubecfg show manifests/example.jsonnet &gt; output/production.yaml</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Prepare target branch</span>
+        <span class="nt">run</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./ci/rake.sh deploy</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Commit changes</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">EndBug/add-and-commit@v7</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">add</span><span class="p">:</span> <span class="s">&#39;production.yaml&#39;</span>
+          <span class="nt">branch</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">deploy</span>
+          <span class="nt">message</span><span class="p">:</span> <span class="s">&quot;[ci</span><span class="nv"> </span><span class="s">skip]</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">${{</span><span class="nv"> </span><span class="s">steps.prep.outputs.VERSION</span><span class="nv"> </span><span class="s">}}&quot;</span>
+          <span class="nt">signoff</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<p>We add three new steps in this example:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># excerpted from above - workflow steps 3, 4, and 5</span>
+<span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Setup kubecfg CLI</span>
+  <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">kingdonb/kubecfg/action@main</span>
+
+<span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">kubecfg show</span>
+  <span class="nt">run</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">kubecfg show manifests/example.jsonnet &gt; output/production.yaml</span>
+
+<span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Prepare target branch</span>
+  <span class="nt">run</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./ci/rake.sh deploy</span>
+</code></pre></div>
+<p>While the remaining examples will be written to depend on <code>kubecfg</code>, some use cases may prefer to use pure Jsonnet only as it is sandboxed and therefore safer. We plan to use the <code>kubecfg</code> capability to take input from other sources, like variables and references, but also network-driven imports and functions.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># from above - substitute these steps in 03-release-manifests.yaml,</span>
+<span class="c1"># between &quot;Checkout repo&quot; and &quot;Commit changes&quot; to use plain Jsonnet instead of kubecfg</span>
+<span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">jsonnet-render</span>
+  <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">alexdglover/jsonnet-render@v1</span>
+  <span class="nt">with</span><span class="p">:</span>
+    <span class="nt">file</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">manifests/example.jsonnet</span>
+    <span class="nt">output_file</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">output/production.yaml</span>
+    <span class="nt">params</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">dryrun=true;env=prod</span>
+
+<span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Prepare target branch</span>
+  <span class="nt">run</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./ci/rake.sh deploy</span>
+</code></pre></div>
+<p>The <code>jsonnet-render</code> step is borrowed from another source, again find it on <a href="https://github.com/marketplace/actions/jsonnet-render">GitHub Actions Marketplace</a> for more information. For Tanka users, there is also <a href="https://github.com/letsbuilders/tanka-action">letsbuilders/tanka-action</a> which describes itself as heavily inspired by <code>jsonnet-render</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">The <code>EndBug/add-and-commit</code> action is used again</p>
+<p>This time, with the help of <code>rake.sh</code>, our change is staged into a different target branch. This is the same <code>deploy</code> branch, regardless of which branch or tag the build comes from; any configured push event can trigger this workflow to trigger an update to the deploy branch.</p>
+</div>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+
+<span class="c1"># ./ci/rake.sh</span>
+<span class="nb">set</span> -feux   <span class="c1"># Usage: $0 &lt;BRANCH&gt;   # Fails when BRANCH is not provided</span>
+<span class="nv">BRANCH</span><span class="o">=</span><span class="nv">$1</span>
+
+<span class="c1"># The output/ directory is listed in .gitignore, where jsonnet rendered output.</span>
+<span class="nb">pushd</span> output
+
+<span class="c1"># Fetch git branch &#39;deploy&#39; and run `git checkout deploy`</span>
+/usr/bin/git -c protocol.version<span class="o">=</span><span class="m">2</span> fetch <span class="se">\</span>
+        --no-tags --prune --progress --no-recurse-submodules <span class="se">\</span>
+        --depth<span class="o">=</span><span class="m">1</span> origin <span class="nv">$BRANCH</span>
+git checkout <span class="nv">$BRANCH</span> --
+
+<span class="c1"># Prepare the output to commit by itself in the deploy branch&#39;s root directory.</span>
+mv -f ./production.yaml ../ <span class="c1"># Overwrite any existing files (no garbage collection here)</span>
+git diff
+
+<span class="c1"># All done (the commit will take place in the next action!)</span>
+<span class="nb">popd</span>
+</code></pre></div>
+<p>Give this file <code>chmod +x</code> before adding and committing; tailor this workflow to your needs. We render from a file <code>manifests/example.jsonnet</code>, it can be anything. The output is a single K8s YAML file, <code>production.yaml</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Commit changes</span>
+  <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">EndBug/add-and-commit@v7</span>
+  <span class="nt">with</span><span class="p">:</span>
+    <span class="nt">add</span><span class="p">:</span> <span class="s">&#39;production.yaml&#39;</span>
+    <span class="nt">branch</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">deploy</span>
+    <span class="nt">message</span><span class="p">:</span> <span class="s">&quot;[ci</span><span class="nv"> </span><span class="s">skip]</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">${{</span><span class="nv"> </span><span class="s">steps.prep.outputs.VERSION</span><span class="nv"> </span><span class="s">}}&quot;</span>
+    <span class="nt">signoff</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<p>This is <a href="https://github.com/marketplace/actions/add-commit">Add &amp; Commit</a> with a <code>branch</code> option, to set the target branch. We've added a <code>signoff</code> option as well here, to demonstrate another feature of this GitHub Action. There are many ways to use this workflow step. The link provides more information.</p>
+<p>The examples that follow can be copied and pasted into <code>manifests/example.jsonnet</code>, then committed to the <code>release</code> branch and pushed to GitHub in order to execute them.</p>
+<p>Pushing this to your repository will fail at first, unless and until a <code>deploy</code> branch is created.</p>
+<p>Run <code>git checkout --orphan deploy</code> to create a new empty HEAD in your repo.</p>
+<p>Run <code>git reset</code> and <code>git stash</code> to dismiss any files that were staged, then run <code>git commit --allow-empty</code> to create an initial empty commit on the branch.</p>
+<p>Now you can copy and run these commands to create an empty branch:</p>
+<div class="highlight"><pre><span></span><code>#- Add a basic kustomization.yaml file
+cat &lt;&lt;EOF &gt; kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- production.yaml
+EOF
+
+#- Add a gitignore so output directory is created
+cat &lt;&lt;EOF &gt; .gitignore
+/output/**
+!/output/.keep
+EOF
+
+#- Add the .keep file
+touch output/.keep
+
+#- Push these files into an empty branch, and go back to main branch
+git add output/.keep .gitignore kustomization.yaml
+git commit -m&#39;seed deploy kustomization.yaml for prod&#39;
+git push -u origin deploy
+git checkout main
+</code></pre></div>
+<p>On the main branch as well, create a <code>.gitignore</code> and <code>/output/.keep</code> for that branch too. We need to make sure that the <code>output/</code> directory is present for writing whenever the Jsonnet workflow begins. The <code>rake.sh</code> script sweeps files from the output into the root directory of the <code>deploy</code> branch.</p>
+<p>Now run <code>git checkout -b release; git push -u origin release</code> to trigger this action and see it working! 🤞🤞</p>
+<p>You may need to be sure that GitHub Actions are enabled on your repository before this will work.</p>
+<p>Read onward to see some basic as well as more advanced uses of <code>kubecfg</code>.</p>
+<h5 id="jsonnet-configmap-with-envsubst">Jsonnet <code>ConfigMap</code> with <code>envsubst</code><a class="headerlink" href="#jsonnet-configmap-with-envsubst" title="Permanent link">&para;</a></h5>
+<p>The next example "enforces," or copies, a value from a <code>configMap</code> from one namespace into many namespaces. This is done so that Kustomizations for each namespace can maintain similar config data in their reconciliations while staying DRY, with some configurations that reach across namespace boundaries.</p>
+<p>With Jsonnet, Kustomize, and Kustomization Controller's <code>postBuild</code> which uses <code>envsubst</code>, there are usually a handful of different ways to accomplish the same task.</p>
+<p>This example demonstrates a feature called <code>ext_vars</code> or <a href="https://jsonnet.org/ref/stdlib.html#ext_vars">External Variables</a> in the Jsonnet <code>stdlib</code>.</p>
+<p>These examples assume (since no such protection has been presented) that nothing prevents <code>production.yaml</code> from writing resources throughout multiple namespaces. This may be difficult or impossible to achieve depending on your environment.</p>
+<p>In order to permit a Kustomization to write into different namespaces, some RBAC configuration may be required.</p>
+<p>When you write a <code>Kustomization</code> to apply this, be sure you are aware of whether or not you have set <code>targetNamespace</code> on the Flux <code>Kustomization</code> as it may override any namespace settings in the Jsonnet output. You may note similar configuration in the <code>kustomization.yaml</code> we wrote into the deploy branch as described above, in the step for <strong>Jsonnet Render Action</strong>.</p>
+<h5 id="external-variable-substitution">External Variable Substitution<a class="headerlink" href="#external-variable-substitution" title="Permanent link">&para;</a></h5>
+<div class="highlight"><pre><span></span><code><span class="err">#</span> <span class="nx">Any</span> <span class="nx">Old</span> <span class="nx">App</span> <span class="nx">Jsonnet</span> <span class="nx">example</span> <span class="mf">0.10.1</span> <span class="o">-</span> <span class="nx">manifests</span><span class="o">/</span><span class="nx">example</span><span class="p">.</span><span class="nx">jsonnet</span>
+
+<span class="nx">local</span> <span class="nx">kube</span> <span class="o">=</span> <span class="k">import</span> <span class="s1">&#39;https://github.com/bitnami-labs/kube-libsonnet/raw/73bf12745b86718083df402e89c6c903edd327d2/kube.libsonnet&#39;</span><span class="p">;</span>
+
+<span class="nx">local</span> <span class="nx">example</span> <span class="o">=</span> <span class="k">import</span> <span class="s1">&#39;example.libsonnet&#39;</span><span class="p">;</span>
+
+<span class="p">{</span>
+  <span class="nx">version_configmap</span><span class="o">:</span> <span class="nx">kube</span><span class="p">.</span><span class="nx">ConfigMap</span><span class="p">(</span><span class="s1">&#39;any-old-app-version&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">metadata</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">namespace</span><span class="o">:</span> <span class="s1">&#39;prod&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="nx">data</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">VERSION</span><span class="o">:</span> <span class="nx">std</span><span class="p">.</span><span class="nx">extVar</span><span class="p">(</span><span class="s1">&#39;VERSION&#39;</span><span class="p">),</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+  <span class="nx">flux_kustomization</span><span class="o">:</span> <span class="nx">example</span><span class="p">.</span><span class="nx">kustomization</span><span class="p">(</span><span class="s1">&#39;any-old-app-prod&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">metadata</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">namespace</span><span class="o">:</span> <span class="s1">&#39;flux-system&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="nx">spec</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">path</span><span class="o">:</span> <span class="s1">&#39;./flux-config/&#39;</span><span class="p">,</span>
+      <span class="nx">postBuild</span><span class="o">+:</span> <span class="p">{</span>
+        <span class="nx">substituteFrom</span><span class="o">+:</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="nx">kind</span><span class="o">:</span> <span class="s1">&#39;ConfigMap&#39;</span><span class="p">,</span>
+            <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;any-old-app-version&#39;</span><span class="p">,</span>
+          <span class="p">},</span>
+        <span class="p">],</span>
+      <span class="p">},</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+  <span class="nx">flux_gitrepository</span><span class="o">:</span> <span class="nx">example</span><span class="p">.</span><span class="nx">gitrepository</span><span class="p">(</span><span class="s1">&#39;any-old-app-prod&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">metadata</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">namespace</span><span class="o">:</span> <span class="s1">&#39;flux-system&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="nx">spec</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;https://github.com/kingdonb/any_old_app&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The above jsonnet declaration <code>example.jsonnet</code> will not complete without its neighbor <code>example.libsonnet</code> (which can be found <a href="https://github.com/kingdonb/any_old_app/blob/release/0.10.1/manifests/example.libsonnet">linked here</a>.) This part of the example contains some boilerplate detail not meant to be copied, like the name <code>any-old-app-prod</code> and the string <code>'sops-gpg'</code> in <code>decryption.secretRef</code> which should be changed to match your environment).</p>
+<p>If you visited the linked <code>example.libsonnet</code> you may have noticed definitions for <code>kustomization</code> and <code>gitrepository</code> that are frankly pretty specific for a library function. They include details you wouldn't expect to find in a vendor library, like a default git repository URL, and a default hardcoded ref to the name of our Source gitrepository.</p>
+<p>This is <strong>our library file</strong>, so it can have our own implementation-specific details in it if we want to include them. Now, the power of Jsonnet is visible; we get to decide which configuration needs to be exposed in our main <code>example.jsonnet</code> file, and which parameters are defaults provided by the library, that can be treated like boilerplate and re-defined however we want.</p>
+<div class="highlight"><pre><span></span><code><span class="err">da</span><span class="kc">ta</span><span class="err">+</span><span class="p">:</span> <span class="p">{</span>
+  <span class="err">VERSION</span><span class="p">:</span> <span class="err">s</span><span class="kc">t</span><span class="err">d.ex</span><span class="kc">t</span><span class="err">Var(&#39;VERSION&#39;)</span><span class="p">,</span>
+<span class="p">},</span>
+</code></pre></div>
+<p>This is <code>std.extVar</code> from <code>ext_vars</code> mentioned earlier. Arrange for the version to be passed in through the GitHub Actions workflow:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># adapted from above - 03-release-manifests.yaml</span>
+<span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">kubecfg show</span>
+  <span class="nt">run</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">kubecfg show -V VERSION=${{ steps.prep.outputs.VERSION }} manifests/example.jsonnet &gt; output/production.yaml</span>
+</code></pre></div>
+<p>The neighbor <code>example.libsonnet</code> file contains some boring (but necessary) boilerplate, so that <code>kubecfg</code> can fulfill this jsonnet, to generate and commit the full Kustomize-ready YAML into a <code>deploy</code> branch as specified in the workflow. (The <code>Kustomization</code> for this example is provided <a href="https://github.com/kingdonb/csh-flux/commit/7c3f1e62e2a87a2157bc9a22db4f913cc30dc12e#diff-f6ebc9688433418f0724f3545c96c301f029fd5a15847b824eab04545e057e84">from my fleet-infra repo here</a>. Personalize and adapt this for use with your own application or manifest generations.)</p>
+<p>The values provided are for example only and should be personalized, or restructured/rewritten completely to suit your preferred template values and instances. For more idiomatic examples written recently by actual Jsonnet pros, the <a href="https://tanka.dev/tutorial/jsonnet">Tanka - Using Jsonnet tutorial</a> is great, and so is <a href="https://tanka.dev/tutorial/parameters">Tanka - Parameterizing</a> which I'll call out specifically for the <code>_config::</code> object example that is decidedly more elegant than my version of parameter passing.</p>
+<p>If you've not previously used Jsonnet before, then you might be wondering about that code example you just read and that's OK! If you <strong>have</strong> previously used Jsonnet and already know what idiomatic Jsonnet looks like, you might be wondering too... you can probably tell I (author, Kingdon) practically haven't ever written a lick of Jsonnet before today.</p>
+<p>These examples are going to get progressively more advanced as I learn Jsonnet while I go. At this point I already think it's pretty cool and I barely know how to use it, but I am starting to understand what type of problems people are using it to solve.</p>
+<p>ConfigMap values are not treated as secret data, so there is no encryption to contend with; this makes for what seems like a good first example. Jsonnet enthusiasts, please forgive my newness. I am sure that my interpretation of how to write Jsonnet is most likely not optimal or idiomatic.</p>
+<p>Above we showed how to pass in a string from our build pipeline, and use it to write back generated Jsonnet manifests into a commit.</p>
+<h5 id="make-two-environments">Make Two Environments<a class="headerlink" href="#make-two-environments" title="Permanent link">&para;</a></h5>
+<p>Here's a second example, defining two environments in separate namespaces, instead of just one:</p>
+<div class="highlight"><pre><span></span><code><span class="err">#</span> <span class="nx">Any</span> <span class="nx">Old</span> <span class="nx">App</span> <span class="nx">Jsonnet</span> <span class="nx">example</span> <span class="mf">0.10.2</span><span class="o">-</span><span class="nx">alpha1</span> <span class="o">-</span> <span class="nx">manifests</span><span class="o">/</span><span class="nx">example</span><span class="p">.</span><span class="nx">jsonnet</span>
+<span class="err">#</span> <span class="nx">Replicate</span> <span class="nx">a</span> <span class="nx">section</span> <span class="k">of</span> <span class="nx">config</span> <span class="nx">and</span> <span class="nx">change</span> <span class="nx">nothing</span> <span class="k">else</span> <span class="nx">about</span> <span class="nx">it</span>
+
+<span class="c1">// ...</span>
+
+<span class="p">{</span>
+  <span class="nx">version_configmap</span><span class="o">:</span> <span class="nx">kube</span><span class="p">.</span><span class="nx">ConfigMap</span><span class="p">(</span><span class="s1">&#39;any-old-app-version&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">metadata</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">namespace</span><span class="o">:</span> <span class="s1">&#39;flux-system&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="nx">data</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">VERSION</span><span class="o">:</span> <span class="nx">std</span><span class="p">.</span><span class="nx">extVar</span><span class="p">(</span><span class="s1">&#39;VERSION&#39;</span><span class="p">),</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+  <span class="nx">test_flux_kustomization</span><span class="o">:</span> <span class="nx">example</span><span class="p">.</span><span class="nx">kustomization</span><span class="p">(</span><span class="s1">&#39;any-old-app-test&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">metadata</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">namespace</span><span class="o">:</span> <span class="s1">&#39;flux-system&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="nx">spec</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">path</span><span class="o">:</span> <span class="s1">&#39;./flux-config/&#39;</span><span class="p">,</span>
+      <span class="nx">postBuild</span><span class="o">+:</span> <span class="p">{</span>
+        <span class="nx">substituteFrom</span><span class="o">+:</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="nx">kind</span><span class="o">:</span> <span class="s1">&#39;ConfigMap&#39;</span><span class="p">,</span>
+            <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;any-old-app-version&#39;</span><span class="p">,</span>
+          <span class="p">},</span>
+        <span class="p">],</span>
+      <span class="p">},</span>
+      <span class="nx">targetNamespace</span><span class="o">:</span> <span class="s1">&#39;test-tenant&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+  <span class="nx">prod_flux_kustomization</span><span class="o">:</span> <span class="nx">example</span><span class="p">.</span><span class="nx">kustomization</span><span class="p">(</span><span class="s1">&#39;any-old-app-prod&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">metadata</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">namespace</span><span class="o">:</span> <span class="s1">&#39;flux-system&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="nx">spec</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">path</span><span class="o">:</span> <span class="s1">&#39;./flux-config/&#39;</span><span class="p">,</span>
+      <span class="nx">postBuild</span><span class="o">+:</span> <span class="p">{</span>
+        <span class="nx">substituteFrom</span><span class="o">+:</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="nx">kind</span><span class="o">:</span> <span class="s1">&#39;ConfigMap&#39;</span><span class="p">,</span>
+            <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;any-old-app-version&#39;</span><span class="p">,</span>
+          <span class="p">},</span>
+        <span class="p">],</span>
+      <span class="p">},</span>
+      <span class="nx">targetNamespace</span><span class="o">:</span> <span class="s1">&#39;prod-tenant&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+  <span class="nx">flux_gitrepository</span><span class="o">:</span> <span class="nx">example</span><span class="p">.</span><span class="nx">gitrepository</span><span class="p">(</span><span class="s1">&#39;any-old-app-prod&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">metadata</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">namespace</span><span class="o">:</span> <span class="s1">&#39;flux-system&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="nx">spec</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;https://github.com/kingdonb/any_old_app&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>In this example, some front-matter was omitted for brevity. Wait, what? (There's nothing brief about this example, it's extra-verbose!)</p>
+<p>"I thought Jsonnet was supposed to be DRY." Be gentle, refactoring is a methodical and deliberate process. We simply copied the original one environment into two environments, test and prod, which differ only in name.</p>
+<p>In the next example, we will subtly change one of them to be configured differently from the other.</p>
+<h5 id="change-something-and-refactor">Change Something and Refactor<a class="headerlink" href="#change-something-and-refactor" title="Permanent link">&para;</a></h5>
+<p>Note the string 'flux-system' only occurs once now, having been factored into a variable <code>config_ns</code>. These are some basic abstractions in Jsonnet that we can use to start to DRY up our source manifests.</p>
+<p>Again, practically nothing changes functionally, this still does exactly the same thing. With another refactoring, we can express this manifest more concisely, thanks to a new library function we can invent, named <code>example.any_old_app</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="err">#</span> <span class="nx">Any</span> <span class="nx">Old</span> <span class="nx">App</span> <span class="nx">Jsonnet</span> <span class="nx">example</span> <span class="mf">0.10.2</span><span class="o">-</span><span class="nx">alpha4</span> <span class="o">-</span> <span class="nx">manifests</span><span class="o">/</span><span class="nx">example</span><span class="p">.</span><span class="nx">jsonnet</span>
+<span class="err">#</span> <span class="nx">Make</span> <span class="nx">something</span> <span class="nx">different</span> <span class="nx">between</span> <span class="nx">test</span> <span class="nx">and</span> <span class="nx">prod</span>
+
+<span class="c1">// ...</span>
+
+<span class="p">{</span>
+  <span class="nx">version_configmap</span><span class="o">:</span> <span class="nx">kube</span><span class="p">.</span><span class="nx">ConfigMap</span><span class="p">(</span><span class="s1">&#39;any-old-app-version&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">metadata</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">namespace</span><span class="o">:</span> <span class="nx">config_ns</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="nx">data</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">VERSION</span><span class="o">:</span> <span class="nx">std</span><span class="p">.</span><span class="nx">extVar</span><span class="p">(</span><span class="s1">&#39;VERSION&#39;</span><span class="p">),</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+  <span class="nx">test_flux_kustomization</span><span class="o">:</span> <span class="nx">example</span><span class="p">.</span><span class="nx">any_old_app</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">spec</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">prune</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+  <span class="nx">prod_flux_kustomization</span><span class="o">:</span> <span class="nx">example</span><span class="p">.</span><span class="nx">any_old_app</span><span class="p">(</span><span class="s1">&#39;prod&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">spec</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">prune</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+  <span class="nx">flux_gitrepository</span><span class="o">:</span> <span class="nx">example</span><span class="p">.</span><span class="nx">gitrepository</span><span class="p">(</span><span class="s1">&#39;any-old-app-prod&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">metadata</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">namespace</span><span class="o">:</span> <span class="nx">config_ns</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="nx">spec</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;https://github.com/kingdonb/any_old_app&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Two things have changed to make this refactoring of the config differ from the first version. Hopefully you'll notice it's a lot shorter.</p>
+<p>Redundant strings have been collapsed into a variable, and more boilerplate has been moved into the library.</p>
+<p>This refactored state is perhaps the most obvious to review, and most intentionally clear about its final intent to the reader. Hopefully you noticed the original environments were identical (or if your eyes glossed over because of the wall of values, you've at least taken my word for it.)</p>
+<p>But now, these two differ. We're creating two configurations for <code>any_old_app</code>, named <code>test</code> and <code>prod</code>. One of them has <code>prune</code> enabled, the test environment, and <code>prod</code> is set more conservatively to prevent accidental deletions, with a setting of <code>prune: false</code>.</p>
+<p>Since the two environments should each differ only by the boolean setting of <code>spec.prune</code>, we can now pack up and hide away the remainder of the config in with the rest of the boilerplate.</p>
+<p>Hiding the undifferentiated boilerplate in a library makes it easier to detect and observe this difference in a quick visual review.</p>
+<p>Here's the new library function's definition:</p>
+<div class="highlight"><pre><span></span><code><span class="nx">any_old_app</span><span class="p">(</span><span class="nx">environment</span><span class="p">)</span><span class="o">::</span> <span class="nx">self</span><span class="p">.</span><span class="nx">kustomization</span><span class="p">(</span><span class="s1">&#39;any-old-app-&#39;</span> <span class="o">+</span> <span class="nx">environment</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">metadata</span><span class="o">+:</span> <span class="p">{</span>
+    <span class="nx">namespace</span><span class="o">:</span> <span class="s1">&#39;flux-system&#39;</span><span class="p">,</span>
+  <span class="p">},</span>
+  <span class="nx">spec</span><span class="o">+:</span> <span class="p">{</span>
+    <span class="nx">path</span><span class="o">:</span> <span class="s1">&#39;./flux-config/&#39;</span><span class="p">,</span>
+    <span class="nx">postBuild</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">substituteFrom</span><span class="o">+:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="nx">kind</span><span class="o">:</span> <span class="s1">&#39;ConfigMap&#39;</span><span class="p">,</span>
+          <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;any-old-app-version&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+      <span class="p">],</span>
+    <span class="p">},</span>
+    <span class="nx">targetNamespace</span><span class="o">:</span> <span class="nx">environment</span> <span class="o">+</span> <span class="s1">&#39;-tenant&#39;</span><span class="p">,</span>
+  <span class="p">},</span>
+<span class="p">},</span>
+</code></pre></div>
+<p>This excerpt is taken from <a href="https://github.com/kingdonb/any_old_app/blob/release/0.10.2/manifests/example.libsonnet#L47-L63">the 10.2 release version</a> of <code>example.libsonnet</code>, where you can also read the specific definition of <code>kustomization</code> that is invoked with the expression <code>self.kustomization('any-old-app-' + environment)</code>.</p>
+<p>The evolution of this jsonnet snippet has gone from <em>unnecessarily verbose</em> to <strong>perfect redundant clarity</strong>. I say redundant, but I'm actually fine with this exactly the way it is. I think, if nothing further changes, we already have met the best way to express this particular manifest with Jsonnet.</p>
+<p>But given that config will undoubtedly have to change as the differing requirements of our development teams and their environments grow, this perfect clarity unfortunately can't last forever in its current form. It will have to scale.</p>
+<p>Notice that strings and repeated invocations of <code>any_old_app</code> are written with parallel structure and form, but there's nothing explicit linking them.</p>
+<p>The object-oriented programmer in me can't help but ask now, "what happens when we need another copy of the environment, this time slightly more different than those two, and ... how about two more after that, (and actually, can we really get by with only ten environments?)" — I am inclined towards thinking of this repeated structure as a sign that an object cries out, waiting to be recognized and named, and defined, (and refactored and defined again.)</p>
+<h5 id="list-comprehension">List Comprehension<a class="headerlink" href="#list-comprehension" title="Permanent link">&para;</a></h5>
+<p>So get ready for <em>obfuscated nightmare mode</em>, (which is the name we thoughtfully reserved for the <a href="https://github.com/kingdonb/any_old_app/blob/release/0.10.2/manifests/example.jsonnet">best and final version</a> of the example,) shown below.</p>
+<div class="highlight"><pre><span></span><code><span class="err">#</span> <span class="nx">Any</span> <span class="nx">Old</span> <span class="nx">App</span> <span class="nx">Jsonnet</span> <span class="nx">example</span> <span class="mf">0.10.2</span> <span class="o">-</span> <span class="nx">manifests</span><span class="o">/</span><span class="nx">example</span><span class="p">.</span><span class="nx">jsonnet</span>
+
+<span class="c1">// This is a simple manifest generation example to demo some simple tasks that</span>
+<span class="c1">// can be automated through Flux, with Flux configs rehydrated through Jsonnet.</span>
+
+<span class="c1">// This example uses kube.libsonnet from Bitnami.  There are other</span>
+<span class="c1">// Kubernetes libraries available, or write your own!</span>
+<span class="nx">local</span> <span class="nx">kube</span> <span class="o">=</span> <span class="k">import</span> <span class="s1">&#39;https://github.com/bitnami-labs/kube-libsonnet/raw/73bf12745b86718083df402e89c6c903edd327d2/kube.libsonnet&#39;</span><span class="p">;</span>
+
+<span class="c1">// The declaration below adds configuration to a more verbose base, defined in</span>
+<span class="c1">// more detail at the neighbor libsonnet file here:</span>
+<span class="nx">local</span> <span class="nx">example</span> <span class="o">=</span> <span class="k">import</span> <span class="s1">&#39;example.libsonnet&#39;</span><span class="p">;</span>
+<span class="nx">local</span> <span class="nx">kubecfg</span> <span class="o">=</span> <span class="k">import</span> <span class="s1">&#39;kubecfg.libsonnet&#39;</span><span class="p">;</span>
+<span class="nx">local</span> <span class="nx">kustomize</span> <span class="o">=</span> <span class="k">import</span> <span class="s1">&#39;kustomize.libsonnet&#39;</span><span class="p">;</span>
+
+<span class="nx">local</span> <span class="nx">config_ns</span> <span class="o">=</span> <span class="s1">&#39;flux-system&#39;</span><span class="p">;</span>
+
+<span class="nx">local</span> <span class="nx">flux_config</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="nx">kube</span><span class="p">.</span><span class="nx">ConfigMap</span><span class="p">(</span><span class="s1">&#39;any-old-app-version&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">data</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">VERSION</span><span class="o">:</span> <span class="nx">std</span><span class="p">.</span><span class="nx">extVar</span><span class="p">(</span><span class="s1">&#39;VERSION&#39;</span><span class="p">),</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+  <span class="nx">example</span><span class="p">.</span><span class="nx">gitrepository</span><span class="p">(</span><span class="s1">&#39;any-old-app-prod&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">spec</span><span class="o">+:</span> <span class="p">{</span>
+      <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;https://github.com/kingdonb/any_old_app&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+<span class="p">]</span> <span class="o">+</span> <span class="nx">kubecfg</span><span class="p">.</span><span class="nx">parseYaml</span><span class="p">(</span><span class="nx">importstr</span> <span class="s1">&#39;examples/configMap.yaml&#39;</span><span class="p">);</span>
+
+<span class="nx">local</span> <span class="nx">kustomization</span> <span class="o">=</span> <span class="nx">kustomize</span><span class="p">.</span><span class="nx">applyList</span><span class="p">([</span>
+  <span class="nx">kustomize</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="nx">config_ns</span><span class="p">),</span>
+<span class="p">]);</span>
+
+<span class="nx">local</span> <span class="nx">kustomization_output</span> <span class="o">=</span> <span class="nx">std</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">kustomization</span><span class="p">,</span> <span class="nx">flux_config</span><span class="p">);</span>
+
+<span class="p">{</span> <span class="nx">flux_config</span><span class="o">:</span> <span class="nx">kustomization_output</span> <span class="p">}</span> <span class="o">+</span> <span class="p">{</span>
+
+  <span class="nx">local</span> <span class="nx">items</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="s1">&#39;prod&#39;</span><span class="p">],</span>
+
+  <span class="nx">joined</span><span class="o">:</span> <span class="p">{</span>
+    <span class="p">[</span><span class="nx">ns</span> <span class="o">+</span> <span class="s1">&#39;_flux_kustomization&#39;</span><span class="p">]</span><span class="o">:</span> <span class="p">{</span>
+      <span class="nx">data</span><span class="o">:</span> <span class="nx">example</span><span class="p">.</span><span class="nx">any_old_app</span><span class="p">(</span><span class="nx">ns</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">spec</span><span class="o">+:</span> <span class="p">{</span>
+          <span class="nx">prune</span><span class="o">:</span> <span class="k">if</span> <span class="nx">ns</span> <span class="o">==</span> <span class="s1">&#39;prod&#39;</span> <span class="nx">then</span> <span class="kc">false</span> <span class="k">else</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="p">},</span>
+      <span class="p">},</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="nx">ns</span> <span class="k">in</span> <span class="nx">items</span>
+
+    <span class="c1">// Credit:</span>
+    <span class="c1">// https://groups.google.com/g/jsonnet/c/ky6sjYj4UZ0/m/d4lZxWbhAAAJ</span>
+    <span class="c1">// thanks Dave for showing how to do something like this in Jsonnet</span>
+  <span class="p">},</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>This is the sixth revision of this example, (some have been omitted from the story, but they are <a href="https://github.com/kingdonb/any_old_app/releases?after=0.10.2-alpha5">in Git history</a>.) I think it's really perfect now. If you're a programmer, I think, this version is perhaps much clearer. That's why I called it <em>obfuscated nightmare mode</em>, right? (I'm a programmer, I swear.)</p>
+<p>The <code>examples/configMap.yaml</code> file can be found <a href="https://github.com/kingdonb/any_old_app/blob/release/0.10.2/manifests/examples/configMap.yaml">in the 0.10.2 tag</a> of <code>kingdonb/any_old_app</code>, it is vestigial and does not serve any functional purpose in this example, except for showing how to compose Jsonnet objects with parsed YAML from a file.</p>
+<p>You should note that kubecfg's <code>kubecfg.parseYaml</code> method always returns an array, even when the <code>importstr</code> input file only contains a single YAML document. Jsonnet arrays, like strings, can be easily added together with a familiar <code>+</code> operator.</p>
+<p>Jsonnet objects can also be added to other objects, composing their fields from smaller objects into larger ones. In the example above, we have added the <code>flux_config</code> object to a collection of <code>AnyOldApp</code> objects, a list comprehension from our environments. This is necessary and important because a Jsonnet program or library must always return a single object.</p>
+<p>I'm trying to learn Jsonnet as fast as I can, I hope you're still with me and if not, don't worry. Where did all of this programming come from? (And what's a list comprehension?) It really doesn't matter.</p>
+<p>The heavy lifting libraries for this example are from <a href="(https://github.com/anguslees/kustomize-libsonnet)">anguslees/kustomize-libsonnet</a>, which implements some basic primitives of Kustomize in Jsonnet. YAML parser is provided by <a href="https://github.com/bitnami/kubecfg/blob/master/lib/kubecfg.libsonnet#L25">bitnami/kubecfg</a>, and the Jsonnet implementations of Kubernetes primitives by <a href="https://github.com/bitnami-labs/kube-libsonnet">bitnami-labs/kube-libsonnet</a>.</p>
+<p>It is a matter of taste whether you consider from above the first, second, or third example to be better stylistically. It is a matter of taste and circumstances, to put a finer point on it. They each have strengths and weaknesses, depending mostly on whatever changes we will have to make to them next.</p>
+<p>We can compare these three versions to elucidate the intent of the programmatically most expressive version which followed the other two. If you're new at this, you may try to explain how these three examples are similar, and also how they differ. Follow the explanation below for added clarity.</p>
+<p>If you haven't studied Jsonnet, this last version may daunt you with its complexity. The fact is YAML is a document store and Jsonnet is a programming language. This complexity is exactly what we came here for, we want our configuration language to be more powerful! Bring on more complex Jsonnet examples!</p>
+<h4 id="breaking-it-down">Breaking It Down<a class="headerlink" href="#breaking-it-down" title="Permanent link">&para;</a></h4>
+<p>We define a configmap and a gitrepository (in Jsonnet), then put it together with another configmap (from plain YAML). That's called <code>flux_config</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="nx">local</span> <span class="nx">kustomization</span> <span class="o">=</span> <span class="nx">kustomize</span><span class="p">.</span><span class="nx">applyList</span><span class="p">([</span>
+  <span class="nx">kustomize</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="nx">config_ns</span><span class="p">),</span>
+<span class="p">]);</span>
+
+<span class="nx">local</span> <span class="nx">kustomization_output</span> <span class="o">=</span> <span class="nx">std</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">kustomization</span><span class="p">,</span> <span class="nx">flux_config</span><span class="p">);</span>
+</code></pre></div>
+<p>This little diddy (above) has the same effect as a Kustomization based on the following instruction to <code>kustomize build</code>, (except it's all jsonnet):</p>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">kustomize.config.k8s.io/v1beta1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Kustomization</span>
+<span class="nt">namespace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${config_ns}</span>
+</code></pre></div>
+<p>... setting the namespace for all objects in <code>flux_config</code> to the value of <code>config_ns</code>.</p>
+<p>Next, we join it together with a list comprehension (at least I think that's what this is called):</p>
+<div class="highlight"><pre><span></span><code><span class="nx">local</span> <span class="nx">items</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="s1">&#39;prod&#39;</span><span class="p">],</span>
+
+<span class="nx">joined</span><span class="o">:</span> <span class="p">{</span>
+  <span class="p">[</span><span class="nx">ns</span> <span class="o">+</span> <span class="s1">&#39;_flux_kustomization&#39;</span><span class="p">]</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">data</span><span class="o">:</span> <span class="nx">example</span><span class="p">.</span><span class="nx">any_old_app</span><span class="p">(</span><span class="nx">ns</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">spec</span><span class="o">+:</span> <span class="p">{</span>
+        <span class="nx">prune</span><span class="o">:</span> <span class="k">if</span> <span class="nx">ns</span> <span class="o">==</span> <span class="s1">&#39;prod&#39;</span> <span class="nx">then</span> <span class="kc">false</span> <span class="k">else</span> <span class="kc">true</span><span class="p">,</span>
+      <span class="p">},</span>
+    <span class="p">},</span>
+  <span class="p">}</span>
+  <span class="k">for</span> <span class="nx">ns</span> <span class="k">in</span> <span class="nx">items</span>
+<span class="p">},</span>
+</code></pre></div>
+<p>Two <code>any_old_app</code> templates are invoked programmatically, with different properties and names, and in target namespaces that are based on the environment names. They go on the end of the document list, and Jsonnet renders them alongside of the others, in various namespaces.</p>
+<p>This is the same technique as in <code>01-manifest-generate.yaml</code>, only this time with Jsonnet and <code>kubecfg</code> instead of <code>sed</code>, (and what a difference it makes!)</p>
+<p>This is the foundation for some real release machinery for your applications, this is not just a bunch of shell scripts. Whenever any commit hits the <code>release</code> branch, or when any tag in the form <code>release/*</code> is pushed, the repo is configured to push generated manifest changes to a <code>deploy</code> branch.</p>
+<p>This behavior is self-contained within the example <code>any_old_app</code> repository in these examples.</p>
+<p>We can use GitHub Actions and Jsonnet to populate parameters through ConfigMap values or with <code>extVars</code>, and at the same time, apply <code>Kustomization</code> and <code>GitRepository</code> as new sync infrastructure for the <code>deploy</code> branch with dependencies on those ConfigMaps. The <code>Kustomization</code> refers to the configmap and makes the <code>VERSION</code> or <code>GIT_SHA</code> variable available as a <code>postBuild</code> substitution, with values pulled from that same configmap we just applied.</p>
+<p>Later, we can repeat this process with a SOPS encrypted secret.</p>
+<p>The process is not very different, though some of the boilerplate is longer, we've already learned to pack away boilerplate. Copying and renaming encrypted secrets within the same cluster is possible wherever cluster operators are permitted to both decrypt and encrypt them with the decryption provider.</p>
+<p>A credential at <code>spec.decryption.secretRef</code> holds the key for decryption. Without additional configuration secrets can usually be copied freely around the cluster, as it is possible to decrypt them freely anywhere the decryption keys are made available.</p>
+<h5 id="copy-configmaps">Copy <code>ConfigMap</code>s<a class="headerlink" href="#copy-configmaps" title="Permanent link">&para;</a></h5>
+<p>Assume that each namespace will be separately configured as a tenant by itself somehow later, and that each tenant performs its own git reconciliation within the tenant namespace. That config is out of scope for this example. We are only interested in briefly demonstrating some Jsonnet use cases here.</p>
+<p>The app version to install is maintained in a <code>ConfigMap</code> in each namespace based on our own decision logic. This can be implemented as a human operator who goes in and updates this variable's value before release time.</p>
+<p>This Jsonnet creates from a list of namespaces, and injects a <code>ConfigMap</code> into each namespace, <a href="https://github.com/kingdonb/any_old_app/blob/release/0.10.3/manifests/example.jsonnet">another example.jsonnet</a>.</p>
+<div class="highlight"><pre><span></span><code><span class="err">#</span> <span class="nx">Any</span> <span class="nx">Old</span> <span class="nx">App</span> <span class="nx">Jsonnet</span> <span class="nx">example</span> <span class="mf">0.10.3</span> <span class="o">-</span> <span class="nx">manifests</span><span class="o">/</span><span class="nx">example</span><span class="p">.</span><span class="nx">jsonnet</span>
+
+<span class="nx">local</span> <span class="nx">release_config</span> <span class="o">=</span> <span class="nx">kube</span><span class="p">.</span><span class="nx">ConfigMap</span><span class="p">(</span><span class="s1">&#39;any-old-app-version&#39;</span><span class="p">);</span>
+<span class="nx">local</span> <span class="nx">namespace_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;prod&#39;</span><span class="p">,</span> <span class="s1">&#39;stg&#39;</span><span class="p">,</span> <span class="s1">&#39;qa&#39;</span><span class="p">,</span> <span class="s1">&#39;uat&#39;</span><span class="p">,</span> <span class="s1">&#39;dev&#39;</span><span class="p">];</span>
+
+<span class="nx">local</span> <span class="nx">release_version</span> <span class="o">=</span> <span class="s1">&#39;0.10.3&#39;</span><span class="p">;</span>
+<span class="nx">local</span> <span class="nx">latest_candidate</span> <span class="o">=</span> <span class="s1">&#39;0.10.3-alpha1&#39;</span><span class="p">;</span>
+
+<span class="p">{</span>
+  <span class="p">[</span><span class="nx">ns</span> <span class="o">+</span> <span class="s1">&#39;_tenant&#39;</span><span class="p">]</span><span class="o">:</span> <span class="p">{</span>
+    <span class="p">[</span><span class="nx">ns</span> <span class="o">+</span> <span class="s1">&#39;_namespace&#39;</span><span class="p">]</span><span class="o">:</span> <span class="p">{</span>
+      <span class="nx">namespace</span><span class="o">:</span> <span class="nx">kube</span><span class="p">.</span><span class="nx">Namespace</span><span class="p">(</span><span class="nx">ns</span><span class="p">),</span>
+    <span class="p">},</span>
+    <span class="p">[</span><span class="nx">ns</span> <span class="o">+</span> <span class="s1">&#39;_configmap&#39;</span><span class="p">]</span><span class="o">:</span> <span class="p">{</span>
+      <span class="nx">version_data</span><span class="o">:</span> <span class="nx">release_config</span> <span class="p">{</span>
+        <span class="nx">metadata</span><span class="o">+:</span> <span class="p">{</span>
+          <span class="nx">namespace</span><span class="o">:</span> <span class="nx">ns</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="nx">data</span><span class="o">+:</span> <span class="p">{</span>
+          <span class="nx">VERSION</span><span class="o">:</span> <span class="k">if</span> <span class="nx">ns</span> <span class="o">==</span> <span class="s1">&#39;prod&#39;</span> <span class="o">||</span> <span class="nx">ns</span> <span class="o">==</span> <span class="s1">&#39;stg&#39;</span> <span class="nx">then</span> <span class="nx">release_version</span> <span class="k">else</span> <span class="nx">latest_candidate</span><span class="p">,</span>
+        <span class="p">},</span>
+      <span class="p">},</span>
+    <span class="p">},</span>
+  <span class="p">}</span>
+  <span class="k">for</span> <span class="nx">ns</span> <span class="k">in</span> <span class="nx">namespace_list</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>In this example, we have set up an additional 3 namespaces and assumed that a Flux Kustomization is provided some other way. The deploy configuration of all 5 environments is maintained here, in a single deploy config.</p>
+<p>Imagine that two policies should exist for promoting releases into environments. The environments for <code>dev</code>elopment, <code>U</code>ser <code>A</code>cceptance <code>T</code>esting (<code>uat</code>), and <code>Q</code>uality <code>A</code>ssurance (<code>qa</code>) can all be primed with the latest release candidate build at any given time.</p>
+<p>This is perhaps an excessive amount of formality for an open source or cloud-native project, though readers working in regulated environments may recognize this familiar pattern.</p>
+<p>This example will possibly fail to apply with the recommended validations enabled, failing with errors that you can review by running <code>flux get kustomization</code> in your flux namespace, like these:</p>
+<div class="highlight"><pre><span></span><code>validation failed: namespace/dev created (server dry run)
+namespace/prod created (server dry run)
+...
+Error from server (NotFound): error when creating &quot;14f54b89-2456-4c15-862e-34670dfcda79.yaml&quot;: namespaces &quot;dev&quot; not found
+Error from server (NotFound): error when creating &quot;14f54b89-2456-4c15-862e-34670dfcda79.yaml&quot;: namespaces &quot;prod&quot; not found
+</code></pre></div>
+<p>As you can perhaps see, the problem is that objects created within the namespace are not valid before creating the namespace. You can disable the validation temporarily by adding a setting <code>validation: none</code> to your Flux Kustomization to get past this error.</p>
+<p>In the deployment configuration above, both <code>prod</code> and staging (<code>stg</code>) are kept in sync with the latest release (not pre-release).</p>
+<p>Left as an exercise to the reader, we can also ask next: is it possible to supplement this configuration with a Flagger canary so that updates to the production config are able to be manually verified in the staging environment before they are promoted into Production?</p>
+<p>(Hint: Look at the <a href="https://docs.flagger.app/usage/webhooks#manual-gating">Manual Gating</a> feature of Flagger.)</p>
+<h5 id="copy-secrets">Copy <code>Secret</code>s<a class="headerlink" href="#copy-secrets" title="Permanent link">&para;</a></h5>
+<p>This example writes the same <code>secretRef</code> into many <code>HelmReleases</code>, to provide for the cluster to be able to use the same <code>imagePullSecret</code> across several <code>Deployments</code> in a namespace. It is a common problem that <code>jsonnet</code> can solve quite handily, without repeating the <code>Secret</code> name over and over as a string.</p>
+<p>Because we have decided to create tenants for each namespace, now is a good time to mention <a href="/cmd/flux_create_tenant">flux create tenant</a>.</p>
+<p>We can take the output of <code>flux create tenant prod --with-namespace prod --export</code> and use it to create <code>manifests/examples/tenant.yaml</code>. Perhaps in a full implementation, we would create a tenant library function and call it many times to create our tenants.</p>
+<p>For this example, you may discard the <code>Namespace</code> and/or <code>ClusterRoleBinding</code> as they are not needed. Here, we actually just need a ServiceAccount to patch.</p>
+<div class="highlight"><pre><span></span><code><span class="nn">---</span>
+<span class="c1"># manifests/examples/tenant.yaml</span>
+<span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ServiceAccount</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">labels</span><span class="p">:</span>
+    <span class="nt">toolkit.fluxcd.io/tenant</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">prod</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">prod</span>
+  <span class="nt">namespace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">prod</span>
+</code></pre></div>
+<p>A namespace will be created by our Jsonnet example code instead (or you may comment this line out in the jsonnet below, if you are already working within a tenant.) The ClusterRoleBinding, or a more restrictive RoleBinding, is important for a functioning Flux tenant installation, but it is not needed for this example.</p>
+<p>(For more information on multi-tenancy, read the <a href="https://github.com/fluxcd/flux2-multi-tenancy">Flux 2 Multi-Tenancy Guide</a>.)</p>
+<p>We make an image pull secret with some docker registry credentials, for the purpose of completing the example. This is just for an example, it can be any secret that you want to replicate through several namespaces in the cluster with Jsonnet.</p>
+<div class="highlight"><pre><span></span><code>kubectl create secret docker-registry prod-docker-pull-secret \
+  --namespace=prod \
+  --docker-username=youruser --docker-password=secretpassword \
+  --docker-email=required@example.org --dry-run=client -oyaml \
+    &gt; manifests/examples/sops-image-pull-secret.yaml
+sops -e -i manifests/examples/sops-image-pull-secret.yaml
+</code></pre></div>
+<p>If you are not familiar with SOPS encryption, you should complete the <a href="/guides/mozilla-sops/">Mozilla SOPS</a> Flux guide before replicating this example, and internalize all of the concepts explained there.</p>
+<p>You will need to have configured your cluster's Kustomization with a decryption provider and decryption keys to enable the inclusion of encrypted secrets in your config repos. It is not safe to write unencrypted secrets into your git repository, and this should be avoided at all costs even if your repository is kept private.</p>
+<p>This final Jsonnet example is presented in context as a working reference in the <code>any_old_app</code> repository, once again as <a href="https://github.com/kingdonb/any_old_app/blob/release/0.10.4/manifests/example.jsonnet">example.jsonnet</a>.</p>
+<div class="highlight"><pre><span></span><code><span class="err">#</span> <span class="nx">Any</span> <span class="nx">Old</span> <span class="nx">App</span> <span class="nx">Jsonnet</span> <span class="nx">example</span> <span class="mf">0.10.4</span> <span class="o">-</span> <span class="nx">manifests</span><span class="o">/</span><span class="nx">example</span><span class="p">.</span><span class="nx">jsonnet</span>
+
+<span class="nx">local</span> <span class="nx">kubecfg</span> <span class="o">=</span> <span class="k">import</span> <span class="s1">&#39;kubecfg.libsonnet&#39;</span><span class="p">;</span>
+<span class="nx">local</span> <span class="nx">kustomize</span> <span class="o">=</span> <span class="k">import</span> <span class="s1">&#39;kustomize.libsonnet&#39;</span><span class="p">;</span>
+
+<span class="nx">local</span> <span class="nx">tenant</span> <span class="o">=</span>
+  <span class="nx">kubecfg</span><span class="p">.</span><span class="nx">parseYaml</span><span class="p">(</span><span class="nx">importstr</span> <span class="s1">&#39;examples/tenant.yaml&#39;</span><span class="p">);</span>
+<span class="nx">local</span> <span class="nx">pull_secrets</span> <span class="o">=</span>
+  <span class="nx">kubecfg</span><span class="p">.</span><span class="nx">parseYaml</span><span class="p">(</span><span class="nx">importstr</span> <span class="s1">&#39;examples/sops-image-pull-secret.yaml&#39;</span><span class="p">);</span>
+
+<span class="nx">local</span> <span class="nx">prod_ns</span> <span class="o">=</span> <span class="s1">&#39;prod&#39;</span><span class="p">;</span>
+<span class="nx">local</span> <span class="nx">staging_ns</span> <span class="o">=</span> <span class="s1">&#39;stg&#39;</span><span class="p">;</span>
+<span class="nx">local</span> <span class="nx">image_pull_secret</span> <span class="o">=</span> <span class="s1">&#39;prod-docker-pull-secret&#39;</span><span class="p">;</span>
+
+<span class="c1">// Set the Image Pull Secret on each ServiceAccount</span>
+<span class="nx">local</span> <span class="nx">updateConfig</span><span class="p">(</span><span class="nx">o</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span>
+  <span class="k">if</span> <span class="nx">o</span><span class="p">.</span><span class="nx">kind</span> <span class="o">==</span> <span class="s1">&#39;ServiceAccount&#39;</span> <span class="nx">then</span> <span class="nx">o</span> <span class="p">{</span>
+    <span class="nx">imagePullSecrets</span><span class="o">:</span> <span class="p">[{</span> <span class="nx">name</span><span class="o">:</span> <span class="nx">image_pull_secret</span> <span class="p">}],</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="nx">o</span>
+<span class="p">);</span>
+
+<span class="c1">// Create a namespace, and add to it Namespace and Secret</span>
+<span class="nx">local</span> <span class="nx">prod_tenant</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="nx">kube</span><span class="p">.</span><span class="nx">Namespace</span><span class="p">(</span><span class="nx">prod_ns</span><span class="p">),</span>
+<span class="p">]</span> <span class="o">+</span> <span class="nx">pull_secrets</span> <span class="o">+</span> <span class="nx">tenant</span><span class="p">;</span>
+
+<span class="c1">// Prod kustomization - apply the updateConfig</span>
+<span class="nx">local</span> <span class="nx">prod_kustomization</span> <span class="o">=</span> <span class="nx">kustomize</span><span class="p">.</span><span class="nx">applyList</span><span class="p">([</span>
+  <span class="nx">updateConfig</span><span class="p">,</span>
+<span class="p">]);</span>
+
+<span class="c1">// Stg kustomization - apply the updateConfig and &quot;stg&quot; ns</span>
+<span class="nx">local</span> <span class="nx">staging_kustomization</span> <span class="o">=</span> <span class="nx">kustomize</span><span class="p">.</span><span class="nx">applyList</span><span class="p">([</span>
+  <span class="nx">updateConfig</span><span class="p">,</span>
+  <span class="nx">kustomize</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="nx">staging_ns</span><span class="p">),</span>
+<span class="p">]);</span>
+
+<span class="c1">// Include both kustomizations in the Jsonnet object</span>
+<span class="p">{</span>
+  <span class="nx">prod</span><span class="o">:</span> <span class="nx">std</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">prod_kustomization</span><span class="p">,</span> <span class="nx">prod_tenant</span><span class="p">),</span>
+  <span class="nx">stg</span><span class="o">:</span> <span class="nx">std</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">staging_kustomization</span><span class="p">,</span> <span class="nx">prod_tenant</span><span class="p">),</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The <code>kubecfg.parseYaml</code> instruction returns a list of Jsonnet objects. Our own Jsonnet closely mirrors the <a href="https://github.com/anguslees/kustomize-libsonnet/blob/master/example.jsonnet">example provided</a> by anguslees, with a few differences.</p>
+<p>The power of kubecfg is well illustrated through this example inspired by <a href="(https://github.com/anguslees/kustomize-libsonnet)">anguslees/kustomize-libsonnet</a>. We parse several YAML files and make several minor updates to them. It really doesn't matter if one document involved is a secret, or that its data is encrypted by SOPS.</p>
+<p>If you are coming to Mozilla SOPS support in Flux v2, having used the SealedSecrets controller before when it was recommended in Flux v1, then you are probably surprised that this works. SOPS does not encrypt secret metadata when used with Flux's Kustomize Controller integration, which makes examples like this one possible.</p>
+<p>The ServiceAccount is a part of Flux's <code>tenant</code> configuration, and a fundamental concept of Kubernetes RBAC. If this concept is still new to you, read more in the <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#use-multiple-service-accounts">Kubernetes docs on Using Service Accounts</a>.</p>
+<p>The other fundamental concept to understand is a Namespace.</p>
+<p>Secrets are namespaced objects, and ordinary users with tenant privileges cannot reach outside of their namespace. If tenants should manage a Flux Kustomization within their own namespace boundaries, then a <code>sops-gpg</code> secret must be present in the Namespace with the Kustomization. Cross-namespace secret refs are not supported.</p>
+<p>However, any principal with access to read a <code>sops-gpg</code> secret can decrypt any data that are encrypted for it.</p>
+<p>Each ServiceAccount can list one or more <code>imagePullSecrets</code>, and any pod that binds the ServiceAccount will automatically include any pull secrets provided there. By adding the imagePullSecret to a ServiceAccount, we can streamline including it everywhere that it is needed.</p>
+<p>We can apply a list of transformations with <code>kustomize.applyList</code> that provides a list of pass-through mutating functions for Jsonnet to apply to each Jsonnet object; in our case we use the <code>updateConfig</code> function to patch each ServiceAccount with the ImagePullSecret that we want it to use.</p>
+<p>Finally, for staging, we additionally apply <code>kustomize.namespace</code> to update all resources to use the <code>stg</code> namespace instead of the <code>prod</code> namespace. The secret can be copied anywhere we want within the reach of our Flux Kustomization, and since our Flux Kustomization still has <code>cluster-admin</code> and local access to the decryption key, there is no obstacle to copying secrets.</p>
+<h4 id="handling-secrets">Handling <code>Secret</code>s<a class="headerlink" href="#handling-secrets" title="Permanent link">&para;</a></h4>
+<p>Because a <code>secret</code> is not safe to store in Git unencrypted, Flux recommends using SOPS to encrypt it.</p>
+<p>SOPS will produce a <a href="https://github.com/mozilla/sops/issues/315">different data key</a> for each fresh invocation of <code>sops -e</code>, producing different cipher data even for the same input data. This is true even when the secret content has not changed. This means, unfortunately, it is not practical for a Manifest Generation routine to implement secret transparency without also granting the capability to read secrets to the CI infrastructure.</p>
+<p>SOPS stores the metadata required to decrypt each secret in the metadata of the secret, which must be stored unencrypted to allow encrypted secrets to be read by the private key owners.</p>
+<p>Secret transparency means that it should be possible for an observer to know when a stored secret has been updated or rotated. Transparency can be achieved in SOPS by running <code>sops</code> as an editor, using <code>sops [encrypted.yaml]</code>, which decrypts for editing and re-encrypts the secret upon closing the editor, thereby only changing the cipher text when secret data also changes.</p>
+<p>Depending on your access model, this suggestion could be either a complete non-starter, or a helpful add-on.</p>
+<p>As an example, Secrets could be read from GitHub Secrets during a CI job, then written encrypted into a secret that is pushed to the deploy branch. This implementation provides a basic solution for simple centralized secrets rotation. But as this would go way beyond simple manifest generation, we consider this beyond the scope of the tutorial, and it is mentioned only as an example of a more complex usage scenario for users to consider.</p>
+<h4 id="replicate-secrets-across-namespaces">Replicate <code>Secrets</code> Across Namespaces<a class="headerlink" href="#replicate-secrets-across-namespaces" title="Permanent link">&para;</a></h4>
+<p>When the data of a <code>secret</code> is stored in the Git repository, it can be encrypted to store and transmit safely. SOPS in Kustomize supports encryption of only <code>(stringData|data)</code> fields, not secret <code>metadata</code> including <code>namespace</code>. This means that secrets within the same repo can be copied freely and decrypted somewhere else, just as long as the <code>Kustomization</code> still has access to the SOPS private key.</p>
+<p>Because of these properties though, copying a SOPS-encrypted secret from one namespace to another within one single Flux tenant is as easy as cloning the YAML manifest and updating the <code>namespace</code> field. Compared to SealedSecrets controller, which does not permit this type of copying; SOPS, on the other hand, does not currently prevent this without some attention being paid to RBAC.</p>
+<p>Remember to protect your secrets with RBAC! This is not optional, when handling secrets as in this example.</p>
+<h4 id="protecting-secrets-from-unauthorized-access">Protecting <code>Secrets</code> from Unauthorized Access<a class="headerlink" href="#protecting-secrets-from-unauthorized-access" title="Permanent link">&para;</a></h4>
+<p>The logical boundary of a secret is any cluster or tenant where the private key is available for decrypting.</p>
+<p>This means that any SOPS secret, once encrypted, can be copied anywhere or used as a base for other Kustomizations in the cluster, so long as the Kustomization itself has access to the decryption keys.</p>
+<p>It is important to understand that the <code>sops-gpg</code> key that is generated in the Flux SOPS guide can be used by any <code>Kustomization</code> in the <code>flux-system</code> namespace.</p>
+<p>It cannot be over-emphasized; if users want secrets to remain secret, the <code>flux-system</code> namespace (and indeed the entire cluster itself) must be hardened and protected, managed by qualified cluster admins. It is recommended that changes which could access encrypted secrets are tightly controlled as much as deemed appropriate.</p>
+<h4 id="more-advanced-secrets-usage">More Advanced Secrets Usage<a class="headerlink" href="#more-advanced-secrets-usage" title="Permanent link">&para;</a></h4>
+<p>The use of KMS as opposed to in-cluster GPG keys with SOPS is left as an exercise for the reader. The basics of KMS with various cloud providers is covered in more depth by the <a href="/guides/mozilla-sops/#using-various-cloud-providers">Mozilla SOPS</a> guide.</p>
+<p>Another scenario we considered, but rejected for these examples, requires to decrypt and then re-encrypt SOPS secrets, for use with the <code>secretGenerator</code> feature of Kustomize. This workflow is not supported here for reasons already explained.</p>
+<p>Flux suggests maintaining the only active copy of the decryption key for a cluster inside of that cluster (though there may be a provision for backups, or some alternate keys permitted to decrypt.) This arrangement makes such use cases significantly more complicated to explain, beyond the scope of this guide.</p>
+<p>For those uses though, additional Workflow Actions are provided:</p>
+<p>The <a href="https://github.com/marketplace/actions/decrypt-sops-secrets">Decrypt SOPS Secrets</a> action may be useful and it is mentioned here, (but no example uses are provided.)</p>
+<p>The <a href="https://github.com/marketplace/actions/sops-binary-installer">Sops Binary Installer</a> action enables more advanced use cases, like encrypting or re-encrypting secrets.</p>
+<h4 id="jsonnet-recap">Jsonnet Recap<a class="headerlink" href="#jsonnet-recap" title="Permanent link">&para;</a></h4>
+<p>While much of this type of manipulation could be handled in <code>Kustomization</code>'s <code>postBuild</code>, via <code>envsubst</code>, some configurations are more complicated this way. They can be better handled in CI, where access to additional tools can be provided.</p>
+<p>By writing YAML manifests into a Git commit, the same manifests that <code>Kustomize</code> directly applies, they can be saved for posterity. Or projected out into a new pull request where they can be reviewed before application, or with the proper safe-guards in place they can be applied immediately through a more direct-driven automation.</p>
+<p>With generated YAML that Flux applies in the cluster directly from Git commits, <strong>fui-yoh</strong> - that's GitOps!</p>
+<h3 id="commit-across-repositories-workflow">Commit Across Repositories Workflow<a class="headerlink" href="#commit-across-repositories-workflow" title="Permanent link">&para;</a></h3>
+<p>Flux will not deploy from pushes on just any branch; GitRepository sources target just one specific branch. Merging to a <code>staging</code> branch, for example, can be used to trigger a deployment to a Staging environment.</p>
+<p>Manifest generation can be used to solve, broadly, very many problems, such that even with many examples, this guide would never be totally exhaustive.</p>
+<p>This is the final example in this guide.</p>
+<p>Here we show 🥁 ... how to replicate the original behavior of Flux v1's image automation! 🤯 🎉</p>
+<p>You can put this workflow in your application repo, and target it toward your <code>fleet-infra</code> repo.</p>
+<p>To replicate the nearest approximation of Flux's "deploy latest image" feature of yesteryore, we use push events to do the job, as we hinted was possible in an earlier example. This can be done without Flux v1's redundant and expensive image pull behavior, retrieving build metadata required to order image tags for deployment.</p>
+<p>Flux recommends using real version numbers in your image tags, with a canonical ordering.</p>
+<p>The alternative is racy and doesn't always guarantee the latest commit will be the one that is deployed, since this behavior depends on the time that each commit is pushed, and even precisely how long the build takes to complete; the difference is fine for Dev environments, but this is not a strategy for Production use cases.</p>
+<p>Your app's CI can commit and push YAML manifests (or one manifest for each app) into a separate deploy branch for <code>Kustomization</code> to apply. The deploy branch in a separate repository should be a branch to which the CI user is granted write access.</p>
+<p>While there are some issues, this is actually perfect for non-prod deployments, eg. in a test environment!</p>
+<p>In context, find <a href="https://github.com/kingdonb/any_old_app/blob/main/.github/workflows/04-update-fleet-infra.yaml">04-update-fleet-infra.yaml</a>, or simply copy it from below.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># ./.github/workflows/04-update-fleet-infra.yaml</span>
+<span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Update Fleet-Infra</span>
+<span class="nt">on</span><span class="p">:</span>
+  <span class="nt">push</span><span class="p">:</span>
+    <span class="nt">branches</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&#39;main&#39;</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+  <span class="nt">run</span><span class="p">:</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Push Update</span>
+    <span class="nt">runs-on</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+    <span class="nt">steps</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Prepare</span>
+        <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">prep</span>
+        <span class="nt">run</span><span class="p">:</span> <span class="p p-Indicator">|</span>
+          <span class="no">VERSION=${GITHUB_SHA::8}</span>
+          <span class="no">if [[ $GITHUB_REF == refs/tags/* ]]; then</span>
+            <span class="no">VERSION=${GITHUB_REF/refs\/tags\//}</span>
+          <span class="no">fi</span>
+          <span class="no">echo ::set-output name=BUILD_DATE::$(date -u +&#39;%Y-%m-%dT%H:%M:%SZ&#39;)</span>
+          <span class="no">echo ::set-output name=VERSION::${VERSION}</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Checkout repo</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">actions/checkout@v2</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Update manifests</span>
+        <span class="nt">run</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./update-k8s.sh $GITHUB_SHA</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Push directory to another repository</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">cpina/github-action-push-to-another-repository@v1.2</span>
+
+        <span class="nt">env</span><span class="p">:</span>
+          <span class="nt">API_TOKEN_GITHUB</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{ secrets.API_TOKEN_GITHUB }}</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">source-directory</span><span class="p">:</span> <span class="s">&#39;flux-config&#39;</span>
+          <span class="nt">destination-github-username</span><span class="p">:</span> <span class="s">&#39;kingdonb&#39;</span>
+          <span class="nt">destination-repository-name</span><span class="p">:</span> <span class="s">&#39;fleet-infra&#39;</span>
+          <span class="nt">target-branch</span><span class="p">:</span> <span class="s">&#39;deploy&#39;</span>
+          <span class="nt">user-email</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">kingdon+bot@weave.works</span>
+          <span class="nt">commit-message</span><span class="p">:</span> <span class="s">&quot;[ci</span><span class="nv"> </span><span class="s">skip]</span><span class="nv"> </span><span class="s">deploy</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">${{</span><span class="nv"> </span><span class="s">steps.prep.outputs.VERSION</span><span class="nv"> </span><span class="s">}}&quot;</span>
+</code></pre></div>
+<p>This is <a href="https://github.com/marketplace/actions/push-directory-to-another-repository">Push directory to another repository</a>. This is especially useful because Flux v2 is made to work with more than one GitRepository.</p>
+<p>If you must use a mono-repo, consider adding a deploy branch to it! There is no need for branches in the same repo to always share a parent and intersect again at a merge point.</p>
+<p>A mono-repo can be counter-productive for performance and will create bottlenecks for Flux, as large commits will take longer to clone, and therefore to reconcile. Ignoring with <code>.sourceignore</code> or <code>spec.ignore</code> will unfortunately not help much with this. Some limitations can only be overcome by changing the data structure.</p>
+<p>The <code>flux-system</code> is in the <code>main</code> branch of <code>kingdonb/fleet-infra</code>, as is the default. We prepared in advance, an empty commit with no parent in the same repository, on the <code>deploy</code> branch, so that this checkout would begin with an empty workspace that <code>ci/rake.sh</code> could copy the <code>output/</code> of Jsonnet into.</p>
+<div class="highlight"><pre><span></span><code>git checkout --orphan deploy
+git reset --hard
+git commit --allow-empty -m<span class="s1">&#39;initial empty commit&#39;</span>
+git push origin deploy
+</code></pre></div>
+<p>This is not technically regressive when compared to the behavior of Flux v1's <code>fluxcd.io/automated</code>, actually avoiding image pull depending on push instead to write the latest Git tag, externally and functionally identical to how Flux v1 did automation. Little else is good that we can say about it.</p>
+<p>It is a compatibility shim, to bridge the gap for Flux v1 users. If possible, users are encouraged to migrate to using timestamps, build numbers, or semver tags, that are all supported by some <a href="/guides/image-update/">Flux v2 image automation</a> features that are still in alpha at the time of this writing.</p>
+<p>Flux's new <a href="/components/image/controller/">Image Automation Controllers</a> are the new solution for Production use!</p>
+<h3 id="adapting-for-flux-v2">Adapting for Flux v2<a class="headerlink" href="#adapting-for-flux-v2" title="Permanent link">&para;</a></h3>
+<p>In Flux v2, with <code>ImagePolicy</code>, these examples may be adjusted to order tags by their <code>BUILD_DATE</code>, by adding more string information to the tags. Besides a build timestamp, we can also add branch name.</p>
+<p>Why not have it all: <code>${branch}-${sha}-${ts}</code> – this is the suggestion given in:</p>
+<ul>
+<li><a href="/guides/sortable-image-tags/#example-of-a-build-process-with-timestamp-tagging">Example of a build process with timestamp tagging</a>.</li>
+</ul>
+<p>Example formats and alternative strings to use for tagging are at:</p>
+<ul>
+<li><a href="/guides/sortable-image-tags/#formats-and-alternatives">Sortable image tags to use with automation</a>.</li>
+</ul>
+<p>We don't expect you to follow these examples to the letter. They present an evolution and are meant to show some of the breadth of options that are available, rather than as prescriptive guidance.</p>
+<p>If you are on GitHub, and are struggling to get started using GitHub Actions, or maybe still waiting to make a move on your planned migration from Flux v1; we hope that these GitHub Actions examples can help Flux users to better bridge the gap between both versions.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        <a href="../azure/" class="md-footer__link md-footer__link--prev" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Azure
+            </div>
+          </div>
+        </a>
+      
+      
+        <a href="../helm/" class="md-footer__link md-footer__link--next" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Helm
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fe42c31b.min.js", "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.4ea5477f.min.js"></script>
+      
+    
+  </body>
+</html>
